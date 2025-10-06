@@ -1,0 +1,5 @@
+MEMORY ADDRESS	OBJECT CODE 	MNEMONICS
+1000	        A0 00 11	    MOV AL,[1100]
+1003	        8A 1E 01 11 	MOV BL,[1101]
+1007	        F6 E3	        MUL BL
+1009	        F4	            HLT 

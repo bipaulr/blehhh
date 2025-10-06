@@ -1,0 +1,17 @@
+cscandisk.c 
+scandisk.c 
+fcfsdisk.c 
+fcfscpu.c 
+sjfcpu.c 
+roundrobincpu.c 
+priocpu.c 
+fifopage.c 
+lrupage.c 
+lfupage.c 
+pali.asm
+add.asm
+sub.asm 
+mul.asm 
+div.asm 
+search.asm 
+sort.asm 

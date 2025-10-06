@@ -15,3 +15,5 @@ mul.asm
 div.asm 
 search.asm 
 sort.asm 
+pass1.c 
+pass2.c

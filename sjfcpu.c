@@ -1,26 +1,24 @@
 #include <stdio.h>
-#include <limits.h> // Required for INT_MAX
+#include <limits.h>
 
-// Using typedef for a shorter struct name
 typedef struct {
-    int id;             // Process ID
-    int at, bt;         // Arrival Time, Burst Time
-    int ct, tat, wt;    // Completion, Turnaround, Waiting Time
-    int is_completed;   // Flag to check if process is done (0 for no, 1 for yes)
+    int id;        // Process ID
+    int at, bt;    // Arrival Time, Burst Time
+    int ct, tat, wt; // Completion, Turnaround, Waiting Time
+    int is_completed;
 } Process;
 
 int main() {
     int n;
     printf("Enter the number of processes: ");
     scanf("%d", &n);
-
     if (n <= 0) return 0;
 
     Process p[n];
-    int execution_order[n]; // To store the sequence of executed processes for the Gantt Chart
+    int execution_order[n];
     float total_tat = 0, total_wt = 0;
 
-    // 1. Get user input for each process
+    // 1. Input
     for (int i = 0; i < n; i++) {
         printf("Enter Arrival Time and Burst Time for P%d: ", i);
         scanf("%d %d", &p[i].at, &p[i].bt);
@@ -28,29 +26,31 @@ int main() {
         p[i].is_completed = 0;
     }
 
-    int completed_count = 0;
+    int completed = 0;
     int current_time = 0;
 
-    // 2. Main scheduler loop
-    while (completed_count < n) {
+    // 2. Scheduler loop
+    while (completed < n) {
         int shortest_idx = -1;
-        int min_burst = INT_MAX;
+        int min_bt = INT_MAX;
 
-        // Find the available process with the shortest burst time
         for (int i = 0; i < n; i++) {
-            if (p[i].at <= current_time && !p[i].is_completed) {
-                if (p[i].bt < min_burst) {
-                    min_burst = p[i].bt;
+            if (!p[i].is_completed && p[i].at <= current_time) {
+                if (p[i].bt < min_bt) {
+                    min_bt = p[i].bt;
                     shortest_idx = i;
+                } else if (p[i].bt == min_bt) {
+                    // Tie-breaker: earlier arrival time
+                    if (p[i].at < p[shortest_idx].at) {
+                        shortest_idx = i;
+                    }
                 }
             }
         }
 
         if (shortest_idx == -1) {
-            // No process is available, CPU is idle
-            current_time++;
+            current_time++; // CPU idle
         } else {
-            // Execute the shortest available process
             p[shortest_idx].ct = current_time + p[shortest_idx].bt;
             p[shortest_idx].tat = p[shortest_idx].ct - p[shortest_idx].at;
             p[shortest_idx].wt = p[shortest_idx].tat - p[shortest_idx].bt;
@@ -59,13 +59,13 @@ int main() {
             total_tat += p[shortest_idx].tat;
             total_wt += p[shortest_idx].wt;
 
-            execution_order[completed_count] = shortest_idx;
-            completed_count++;
-            current_time = p[shortest_idx].ct; // Move time to the completion of this process
+            execution_order[completed] = shortest_idx;
+            completed++;
+            current_time = p[shortest_idx].ct;
         }
     }
 
-    // 3. Display the results table
+    // 3. Display results
     printf("\n--- SJF Scheduling Results ---\n");
     printf("PID\tAT\tBT\tCT\tTAT\tWT\n");
     for (int i = 0; i < n; i++) {
@@ -74,28 +74,26 @@ int main() {
     printf("\nAverage Turnaround Time: %.2f\n", total_tat / n);
     printf("Average Waiting Time: %.2f\n", total_wt / n);
 
-    // 4. Display the Gantt Chart
+    // 4. Gantt Chart
     printf("\n--- Gantt Chart ---\n");
-    int last_ct = 0;
+    int last_time = 0;
     printf("|");
     for (int i = 0; i < n; i++) {
-        int current_p_idx = execution_order[i];
-        if (p[current_p_idx].at > last_ct) {
-            printf(" IDLE |"); // Show idle time if there's a gap
+        int idx = execution_order[i];
+        if (p[idx].at > last_time) {
+            printf(" IDLE |");
         }
-        printf(" P%d |", p[current_p_idx].id);
-        last_ct = p[current_p_idx].ct;
+        printf(" P%d |", p[idx].id);
+        last_time = p[idx].ct;
     }
     printf("\n0");
 
-    last_ct = 0;
+    last_time = 0;
     for (int i = 0; i < n; i++) {
-        int current_p_idx = execution_order[i];
-        if (p[current_p_idx].at > last_ct) {
-            printf("     %d", p[current_p_idx].at); // Timestamp for end of idle time
-        }
-        printf("     %d", p[current_p_idx].ct); // Timestamp for completion of process
-        last_ct = p[current_p_idx].ct;
+        int idx = execution_order[i];
+        if (p[idx].at > last_time) printf("    %d", p[idx].at);
+        printf("    %d", p[idx].ct);
+        last_time = p[idx].ct;
     }
     printf("\n");
 

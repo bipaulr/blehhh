@@ -1,12 +1,14 @@
 #include <stdio.h>
-#include <stdlib.h> // Required for the abs() function
+#include <stdlib.h> // For abs()
 
 int main() {
     int n, head, disk_size, direction;
 
-    // 1. Get user inputs
+    // 1. User inputs
     printf("Enter the number of disk requests: ");
     scanf("%d", &n);
+    if (n <= 0) return 0;
+
     int requests[n];
     printf("Enter the disk request queue (track numbers):\n");
     for (int i = 0; i < n; i++) scanf("%d", &requests[i]);
@@ -17,10 +19,10 @@ int main() {
     printf("Enter the total disk size (e.g., 200 for tracks 0-199): ");
     scanf("%d", &disk_size);
 
-    printf("Enter the initial direction of movement (1 for high/right, 0 for low/left): ");
+    printf("Enter the initial direction (1 = right/high, 0 = left/low): ");
     scanf("%d", &direction);
 
-    // 2. Sort the request array using Bubble Sort
+    // 2. Sort the request array
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - i - 1; j++) {
             if (requests[j] > requests[j + 1]) {
@@ -31,11 +33,9 @@ int main() {
         }
     }
 
-    // 3. Find the position where the head should start servicing requests
+    // 3. Find start position
     int start_pos = 0;
-    while (start_pos < n && requests[start_pos] < head) {
-        start_pos++;
-    }
+    while (start_pos < n && requests[start_pos] < head) start_pos++;
 
     int total_head_movement = 0;
     int current_head = head;
@@ -43,36 +43,39 @@ int main() {
     printf("\n--- SCAN Seek Sequence ---\n");
     printf("%d", current_head);
 
-    // 4. Execute the SCAN logic based on the direction
-    if (direction == 1) { // Moving towards the high end (right)
-        // Service all requests to the right of the head
+    if (direction == 1) { // Moving right
+        // Service requests to the right
         for (int i = start_pos; i < n; i++) {
             total_head_movement += abs(current_head - requests[i]);
             current_head = requests[i];
             printf(" -> %d", current_head);
         }
-        // Move to the end of the disk
-        total_head_movement += abs(current_head - (disk_size - 1));
-        current_head = disk_size - 1;
-        printf(" -> %d", current_head);
-        // Service all requests on the way back (to the left)
+        // Move to end if last request not at end
+        if (current_head != disk_size - 1) {
+            total_head_movement += abs(current_head - (disk_size - 1));
+            current_head = disk_size - 1;
+            printf(" -> %d", current_head);
+        }
+        // Service requests to the left
         for (int i = start_pos - 1; i >= 0; i--) {
             total_head_movement += abs(current_head - requests[i]);
             current_head = requests[i];
             printf(" -> %d", current_head);
         }
-    } else { // Moving towards the low end (left)
-        // Service all requests to the left of the head
+    } else { // Moving left
+        // Service requests to the left
         for (int i = start_pos - 1; i >= 0; i--) {
             total_head_movement += abs(current_head - requests[i]);
             current_head = requests[i];
             printf(" -> %d", current_head);
         }
-        // Move to the beginning of the disk
-        total_head_movement += abs(current_head - 0);
-        current_head = 0;
-        printf(" -> %d", current_head);
-        // Service all requests on the way back (to the right)
+        // Move to start if last request not at 0
+        if (current_head != 0) {
+            total_head_movement += abs(current_head - 0);
+            current_head = 0;
+            printf(" -> %d", current_head);
+        }
+        // Service requests to the right
         for (int i = start_pos; i < n; i++) {
             total_head_movement += abs(current_head - requests[i]);
             current_head = requests[i];
@@ -81,7 +84,6 @@ int main() {
     }
     printf("\n");
 
-    // 5. Display the final result
     printf("\nTotal head movement (seek time): %d cylinders\n", total_head_movement);
 
     return 0;

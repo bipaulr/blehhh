@@ -3,45 +3,50 @@
 #include <stdlib.h>
 
 int main() {
-    char opcode[15], operand[30], label[15];
+    char label[15], opcode[15], operand[30];
     char optab_opcode[15], optab_value[15];
-    int locctr, start, length;
-    FILE *inp, *symtab, *optab, *inter, *leng;
+    int locctr = 0, start = 0, length = 0;
+    FILE *inp, *symtab, *optab, *inter, *lengthFile;
 
     inp = fopen("input.txt", "r");
     symtab = fopen("symtab.txt", "w");
     optab = fopen("optab.txt", "r");
     inter = fopen("intermediate.txt", "w");
-    leng = fopen("length.txt", "w");
+    lengthFile = fopen("length.txt", "w");
 
-    if (!inp || !symtab || !optab || !inter || !leng) {
+    if (!inp || !symtab || !optab || !inter || !lengthFile) {
         printf("Error: Could not open one or more files.\n");
         return 1;
     }
 
-    fscanf(inp, "%s %s %s", label, opcode, operand);
+    // Read first line
+    if (fscanf(inp, "%s %s %s", label, opcode, operand) != 3) {
+        printf("Error: Invalid input format in first line.\n");
+        return 1;
+    }
 
+    // START
     if (strcmp(opcode, "START") == 0) {
         locctr = (int)strtol(operand, NULL, 16);
         start = locctr;
-        // Simplified output with tabs
         fprintf(inter, "%X\t%s\t%s\t%s\n", locctr, label, opcode, operand);
-        fscanf(inp, "%s %s %s", label, opcode, operand);
-    } else {
-        locctr = 0;
-        start = 0;
+        if (fscanf(inp, "%s %s %s", label, opcode, operand) != 3) {
+            printf("Error: Unexpected end of file after START.\n");
+            return 1;
+        }
     }
 
+    // Process till END
     while (strcmp(opcode, "END") != 0) {
         if (strcmp(label, "~") != 0) {
-            // Simplified output with tabs
             fprintf(symtab, "%s\t%X\n", label, locctr);
         }
-        // Simplified output with tabs
+
         fprintf(inter, "%X\t%s\t%s\t%s\n", locctr, label, opcode, operand);
 
         rewind(optab);
         int found = 0;
+
         while (fscanf(optab, "%s %s", optab_opcode, optab_value) == 2) {
             if (strcmp(opcode, optab_opcode) == 0) {
                 locctr += 3;
@@ -63,18 +68,22 @@ int main() {
                 } else if (operand[0] == 'X') {
                     locctr += (strlen(operand) - 3) / 2;
                 }
+            } else {
+                printf("Warning: Unknown opcode %s at LOCCTR %X\n", opcode, locctr);
             }
         }
-        fscanf(inp, "%s %s %s", label, opcode, operand);
+
+        if (fscanf(inp, "%s %s %s", label, opcode, operand) != 3)
+            break;
     }
 
     fprintf(inter, "%X\t%s\t%s\t%s\n", locctr, label, opcode, operand);
 
     length = locctr - start;
-    printf("\nProgram size: %x\n", length);
-    fprintf(leng, "%x", length);
+    printf("\nProgram size: %X\n", length);
+    fprintf(lengthFile, "%X", length);
 
-    fclose(leng);
+    fclose(lengthFile);
     fclose(inp);
     fclose(optab);
     fclose(symtab);

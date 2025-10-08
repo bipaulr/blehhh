@@ -1,0 +1,14 @@
+DECLARE
+    CURSOR cursor_name IS select_statement;
+    variable1 table_name.column_name%TYPE;
+    variable2 table_name.column_name%TYPE;
+BEGIN
+    OPEN cursor_name;
+    LOOP
+        FETCH cursor_name INTO variable1, variable2;
+        EXIT WHEN cursor_name%NOTFOUND;
+        -- Processing statements
+        DBMS_OUTPUT.PUT_LINE(variable1 || ' ' || ' ');
+    END LOOP;
+    CLOSE cursor_name;
+END;

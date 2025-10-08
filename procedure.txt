@@ -1,0 +1,11 @@
+CREATE [OR REPLACE] PROCEDURE procedure_name (
+    parameter1 [IN | OUT | IN OUT] datatype,
+    parameter2 [IN | OUT | IN OUT] datatype
+)
+IS
+    -- Variable declarations
+BEGIN
+    -- Procedure body
+EXCEPTION
+    -- Exception handling
+END;

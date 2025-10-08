@@ -1,0 +1,13 @@
+CREATE [OR REPLACE] FUNCTION function_name (
+    parameter1 [IN | OUT | IN OUT] datatype,
+    parameter2 [IN | OUT | IN OUT] datatype
+)
+RETURN return_datatype
+IS
+    -- Variable declarations
+BEGIN
+    -- Function body
+    RETURN value;
+EXCEPTION
+    -- Exception handling
+END;

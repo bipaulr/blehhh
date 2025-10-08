@@ -1,0 +1,12 @@
+CREATE [OR REPLACE] TRIGGER trigger_name
+{BEFORE | AFTER | INSTEAD OF}
+{INSERT | UPDATE | DELETE [OF column_name]}
+ON table_name
+[REFERENCING OLD AS old NEW AS new]
+[FOR EACH ROW]
+[WHEN (condition)]
+DECLARE
+    -- Variable declarations
+BEGIN
+    -- Trigger body
+END;

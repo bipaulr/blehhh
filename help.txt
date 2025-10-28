@@ -6,6 +6,7 @@ sjfcpu.c
 roundrobincpu.c 
 priocpu.c 
 fifopage.c 
+hii
 lrupage.c 
 lfupage.c 
 pali.asm

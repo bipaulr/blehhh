@@ -12,8 +12,9 @@ pali.asm
 add.asm
 sub.asm 
 mul.asm 
-div.asm 
-search.asm 
-sort.asm 
+div.asm  
 pass1.c 
 pass2.c
+macro.c
+reloc.c
+abs.c 

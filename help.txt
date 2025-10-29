@@ -19,3 +19,6 @@ pass2.c
 macro.c
 reloc.c
 abs.c 
+indexed.c
+sequential.c 
+linked.c 

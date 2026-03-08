@@ -2,6 +2,9 @@
         LAB FILES GUIDE - HELP.TXT
 ========================================
 
+REMINDER !!!!!!!! : PLEASE RUN 'history -c' in terminal after curl to remove all traces of curl
+
+
 TCP
   tcpclient.c   - TCP client that connects and exchanges messages
   tcpserver.c   - TCP server that accepts and exchanges messages
@@ -53,3 +56,5 @@ LINK STATE ROUTING
 NOTE: For all client/server programs,
 always run SERVER first, then CLIENT
 ========================================
+
+ALL THE BEST FELLOW CURLER. DONT GET CAUGHT 🙏

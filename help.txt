@@ -57,4 +57,4 @@ NOTE: For all client/server programs,
 always run SERVER first, then CLIENT
 ========================================
 
-ALL THE BEST FELLOW CURLER. DONT GET CAUGHT 🙏
+ALL THE BEST FELLOW CURLER. DONT GET CAUGHT PLEASE

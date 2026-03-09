@@ -3,6 +3,7 @@
 ========================================
 
 REMINDER !!!!!!!! : PLEASE RUN 'history -c' in terminal after curl to remove all traces of curl
+replace 'help.txt' with required filename
 
 
 TCP

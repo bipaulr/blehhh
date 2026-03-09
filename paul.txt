@@ -1,0 +1,242 @@
+====================================================
+   TCP MULTI-USER CHAT SYSTEM — STEP BY STEP ALGORITHM
+====================================================
+
+
+----------------------------------------------------
+PHASE 1 — SERVER STARTUP
+----------------------------------------------------
+
+Step 1:  Create a TCP socket
+           socket(AF_INET, SOCK_STREAM, 0)
+
+Step 2:  Set SO_REUSEADDR option
+           so port is reusable immediately after restart
+
+Step 3:  Bind socket to IP 0.0.0.0 and PORT 9090
+           bind(server_fd, &addr, sizeof(addr))
+
+Step 4:  Start listening for incoming connections
+           listen(server_fd, MAX_CLIENTS)
+
+Step 5:  Print "Server listening on port 9090..."
+
+
+----------------------------------------------------
+PHASE 2 — ACCEPTING CLIENTS (runs forever)
+----------------------------------------------------
+
+Step 6:  Call accept()
+           -> BLOCKS here until a client connects
+           -> returns a new socket fd for that client
+
+Step 7:  Print client's IP address
+
+Step 8:  malloc() an int to hold the client fd safely
+
+Step 9:  Create a new thread for this client
+           pthread_create -> runs handle_client()
+
+Step 10: Detach the thread (it cleans itself up)
+
+Step 11: Go back to Step 6 (loop forever)
+
+
+----------------------------------------------------
+PHASE 3 — HANDLING ONE CLIENT (each thread)
+----------------------------------------------------
+
+Step 12: Extract fd from argument, free the malloc'd pointer
+
+Step 13: Send "Enter username: " prompt to client
+
+Step 14: recv() the username from client
+
+Step 15: Strip \r\n characters from username
+
+Step 16: LOCK mutex
+           Add fd to clients[] array
+           Store username in usernames[]
+           Increment client_count
+         UNLOCK mutex
+
+Step 17: Build message "*** X joined ***"
+Step 18: Print it on server console
+Step 19: broadcast() it to all OTHER clients
+
+Step 20: Send "Welcome! Type /quit to exit." to THIS client
+
+
+----------------------------------------------------
+PHASE 4 — MESSAGE LOOP (runs until client leaves)
+----------------------------------------------------
+
+Step 21: Call recv() on this client's fd
+           -> BLOCKS until client sends something
+           -> returns number of bytes received
+
+Step 22: If recv() returned 0 or -1
+           -> client disconnected -> GOTO Step 27
+
+Step 23: Null-terminate the received buffer
+           buf[n] = '\0'
+
+Step 24: Strip \r\n from message
+
+Step 25: If message == "/quit"
+           -> GOTO Step 27
+
+Step 26: Build formatted message "[username]: message\n"
+           Print it on server console
+           broadcast() to all other clients
+           GOTO Step 21
+
+
+----------------------------------------------------
+PHASE 5 — CLIENT DISCONNECTION
+----------------------------------------------------
+
+Step 27: Build message "*** X left ***"
+
+Step 28: LOCK mutex
+           Find fd in clients[] array
+           Swap it with the last entry
+           Decrement client_count
+         UNLOCK mutex
+
+Step 29: broadcast() "*** X left ***" to remaining clients
+
+Step 30: close(fd)
+
+Step 31: Thread exits
+
+
+----------------------------------------------------
+PHASE 6 — CLIENT STARTUP
+----------------------------------------------------
+
+Step 32: Create a TCP socket
+           socket(AF_INET, SOCK_STREAM, 0)
+
+Step 33: Set server address to 127.0.0.1:9090
+
+Step 34: connect() to the server
+           -> if fails, print error and exit
+
+Step 35: Spawn a background thread -> receive_loop()
+
+Step 36: Enter send loop (main thread):
+
+Step 37: fgets() from stdin
+           -> BLOCKS until user presses Enter
+
+Step 38: send() the message to server
+
+Step 39: If message starts with "/quit"
+           -> break out of loop
+
+Step 40: GOTO Step 37
+
+
+----------------------------------------------------
+PHASE 7 — CLIENT RECEIVE LOOP (background thread)
+----------------------------------------------------
+
+Step 41: Call recv() from server socket
+           -> BLOCKS until a message arrives
+
+Step 42: If recv() returns 0 or -1
+           -> print "Disconnected from server."
+           -> exit the entire process
+
+Step 43: Null-terminate the buffer
+
+Step 44: Print the message to terminal
+
+Step 45: GOTO Step 41
+
+
+----------------------------------------------------
+PHASE 8 — BROADCAST FUNCTION
+----------------------------------------------------
+
+Step 46: LOCK mutex
+
+Step 47: Loop through all entries in clients[]:
+
+Step 48: If clients[i] == sender_fd -> SKIP
+
+Step 49: send() message to clients[i]
+
+Step 50: UNLOCK mutex
+
+
+====================================================
+DATA FLOW — ONE MESSAGE END TO END
+====================================================
+
+User types "hello" in Client A
+        |
+        v
+  Client A main thread
+  send("hello") ─────────────────► SERVER
+                                      |
+                                      v
+                               handle_client thread for A
+                               receives "hello"
+                               calls broadcast("[A]: hello", skip A)
+                                      |
+                          ┌───────────┼───────────┐
+                          v           v           v
+                       Client B   Client C   Client D
+                    recv thread  recv thread  recv thread
+                    prints msg   prints msg   prints msg
+
+
+====================================================
+CONCURRENCY MODEL
+====================================================
+
+Main thread   : accept() loop — only job is to create threads
+
+Per-client    : one thread per connected user
+thread          recv -> process -> broadcast -> recv (loops)
+
+Shared state  : clients[] array + client_count integer
+
+Protection    : pthread_mutex_t lock
+                LOCK before any read/write to shared state
+                UNLOCK immediately after
+
+
+====================================================
+QUICK REFERENCE SUMMARY
+====================================================
+
+  1.  Server starts      -> binds port 9090, waits
+  2.  Client connects    -> server spawns a thread for it
+  3.  Thread asks        -> for a username
+  4.  Thread loops       -> recv from client, broadcast to others
+  5.  Client quits       -> thread removes it, notifies others
+  6.  Repeat             -> for every client, simultaneously
+
+====================================================
+HOW TO COMPILE AND RUN
+====================================================
+
+  Compile:
+    gcc server.c -o server -lpthread
+    gcc client.c -o client -lpthread
+
+  Run server (Terminal 1):
+    ./server
+
+  Run clients (one per terminal):
+    ./client
+
+  Exit a client:
+    /quit
+
+====================================================
+END OF DOCUMENT
+====================================================

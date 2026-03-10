@@ -53,6 +53,12 @@ LINK STATE ROUTING
   lsr.c         - Dijkstra Link State Routing code
   lsr.txt       - Algorithm for LSR
 
+NS2 SIMLULATOR
+  ls.tcl          - Link State simulation script
+  ls_analysis.awk - LS performance metric analyzer
+  dv.tcl          - Distance Vector simulation script
+  dv_analysis.awk - DV performance metric analyzer
+  
 ========================================
 NOTE: For all client/server programs,
 always run SERVER first, then CLIENT

@@ -1,83 +1,52 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-
+#include <sys/socket.h>
+#include <sys/time.h>
+#include <sys/select.h>
+void resend_message(int msg_num, int c_sock)
+{
+char buff[60];
+snprintf(buff, sizeof(buff), "Resending message: %d", msg_num);
+printf("%s\n", buff);
+write(c_sock, buff, sizeof(buff));
+usleep(1000);
+}
 int main()
 {
-    int s, ns;
-    int base = 0;
-    int window = 3;
-    int total = 5;
-
-    char msg[100], ack[100];
-
-    struct sockaddr_in server, client;
-    socklen_t len;
-
-    s = socket(AF_INET, SOCK_STREAM, 0);
-
-    server.sin_family = AF_INET;
-    server.sin_port = htons(5000);
-    server.sin_addr.s_addr = INADDR_ANY;
-
-    bind(s, (struct sockaddr*)&server, sizeof(server));
-
-    listen(s, 5);
-
-    len = sizeof(client);
-
-    ns = accept(s, (struct sockaddr*)&client, &len);
-
-    while(base < total)
-    {
-        /*
-            Send frames inside window
-        */
-
-        for(int i = base; i < base + window && i < total; i++)
-        {
-            sprintf(msg, "Frame %d", i);
-
-            send(ns, msg, strlen(msg)+1, 0);
-
-            printf("Sent: %s\n", msg);
-        }
-
-        /*
-            Receive ACKs
-        */
-
-        for(int i = base; i < base + window && i < total; i++)
-        {
-            recv(ns, ack, sizeof(ack), 0);
-
-            printf("Received: %s\n", ack);
-
-            /*
-                If NACK received,
-                retransmit only that frame
-            */
-
-            if(strncmp(ack, "NACK", 4) == 0)
-            {
-                int lost;
-
-                sscanf(ack, "NACK %d", &lost);
-
-                sprintf(msg, "Frame %d", lost);
-
-                send(ns, msg, strlen(msg)+1, 0);
-
-                printf("Retransmitted: %s\n", msg);
-            }
-        }
-
-        base += window;
-    }
-
-    close(ns);
-    close(s);
-
-    return 0;
+int s_sock, c_sock;
+struct sockaddr_in server, client;
+socklen_t addr_len = sizeof(client);
+s_sock = socket(AF_INET, SOCK_STREAM, 0);
+if (s_sock < 0)
+{
+perror("socket");
+return 0;
+}
+server.sin_family = AF_INET;
+server.sin_port = htons(9009);
+server.sin_addr.s_addr = INADDR_ANY;
+bind(s_sock, (struct sockaddr *)&server, sizeof(server));
+listen(s_sock, 10);
+printf("Server Up - Selective Repeat ARQ\n");
+c_sock = accept(s_sock, (struct sockaddr *)&client, &addr_len);
+int total_msgs = 9;
+int window_size = 3;
+int sent_msgs = 0;
+while (sent_msgs < total_msgs)
+{
+for (int i = sent_msgs; i < sent_msgs + window_size && i < total_msgs; i++)
+{
+char buff[50];
+snprintf(buff, sizeof(buff), "server message: %d", i);
+printf("Message sent to client: %s\n", buff);
+write(c_sock, buff, sizeof(buff));
+usleep(1000);
+}
+sent_msgs += window_size;
+}
+close(c_sock);
+close(s_sock);
 }

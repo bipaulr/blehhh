@@ -1,51 +1,63 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <pthread.h>
 #include <arpa/inet.h>
 
-#define PORT 9090
-#define BUF_SIZE 1024
-
-int sock;
-
-void *receive(void *arg) {
-    char buf[BUF_SIZE];
-    int n;
-    while ((n = recv(sock, buf, BUF_SIZE - 1, 0)) > 0) {
-        buf[n] = 0;
-        printf("%s", buf);
-        fflush(stdout);
-    }
-    printf("Disconnected from server.\n");
-    exit(0);
-}
-
 int main() {
-    sock = socket(AF_INET, SOCK_STREAM, 0);
+    int s;
+    int base = 1, next = 1;
+    int window = 3;
+    int total = 5;
+    char msg[100], reply[100];
+    struct sockaddr_in server;
 
-    struct sockaddr_in addr = {
-        .sin_family = AF_INET,
-        .sin_port = htons(PORT)
-    };
-    inet_pton(AF_INET, "127.0.0.1", &addr.sin_addr);
+    s = socket(AF_INET, SOCK_STREAM, 0);
+    server.sin_family = AF_INET;
+    server.sin_port = htons(5000);
+    server.sin_addr.s_addr = inet_addr("127.0.0.1");
 
-    if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-        perror("connect failed");
+    if (connect(s, (struct sockaddr*)&server, sizeof(server)) < 0) {
+        printf("Connection failed.\n");
         return 1;
     }
 
-    pthread_t tid;
-    pthread_create(&tid, NULL, receive, NULL);
-    pthread_detach(tid);
+    // No timeout configuration – we rely on NACKs from the server
 
-    char buf[BUF_SIZE];
-    while (fgets(buf, BUF_SIZE, stdin)) {
-        send(sock, buf, strlen(buf), 0);
-        if (strncmp(buf, "/quit", 5) == 0) break;
+    while (base <= total) {
+        // Send burst inside window
+        while (next < base + window && next <= total) {
+            memset(msg, 0, sizeof(msg));
+            sprintf(msg, "Frame %d", next);
+            send(s, msg, strlen(msg) + 1, 0);
+            printf("Sent: %s\n", msg);
+            sleep(1);   // small delay for visualization
+            next++;
+        }
+
+        // Receive reply (blocks until server responds with ACK or NACK)
+        memset(reply, 0, sizeof(reply));
+        recv(s, reply, sizeof(reply), 0);
+
+        int ackno;
+        if (sscanf(reply, "ACK %d", &ackno) == 1) {
+            if (ackno >= base) {
+                printf("Received: %s\n", reply);
+                base = ackno + 1;   // slide window past ACKed frame
+            }
+        }
+        else if (sscanf(reply, "NACK %d", &ackno) == 1) {
+            printf("Received: %s → Retransmitting from frame %d\n", reply, ackno);
+            next = ackno;           // Go-Back-N: restart from lost frame
+            // Optional: base remains unchanged (we haven't advanced)
+        }
     }
 
-    close(sock);
+    // Signal server to exit cleanly
+    memset(msg, 0, sizeof(msg));
+    sprintf(msg, "Exit");
+    send(s, msg, strlen(msg) + 1, 0);
+
+    printf("All frames transmitted successfully!\n");
+    close(s);
     return 0;
 }

@@ -18,27 +18,19 @@ len = sizeof(client);
 ns = accept(s, (struct sockaddr*)&client, &len);
 for(i = 0; i < 5; )
 {
-    sprintf(msg, "Frame %d", i);
-
-    send(ns, msg, strlen(msg)+1, 0);
-
-    printf("Sent: %s\n", msg);
-
-    recv(ns, ack, sizeof(ack), 0);
-
-    printf("Received: %s\n", ack);
-    /*
-        If NACK received,
-        resend same frame
-    */
-    if(strncmp(ack, "NACK", 4) == 0)
-    {
-        printf("Retransmitting Frame %d\n", i);
-    }
-    else
-    {
-        i++;
-    }
+sprintf(msg, "Frame %d", i);
+send(ns, msg, strlen(msg)+1, 0);
+printf("Sent: %s\n", msg);
+recv(ns, ack, sizeof(ack), 0);
+printf("Received: %s\n", ack);
+if(strncmp(ack, "NACK", 4) == 0)
+{
+printf("Retransmitting Frame %d\n", i);
+}
+else
+{
+i++;
+}
 }
 close(ns);
 close(s);

@@ -1,27 +1,21 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <sys/ioctl.h> // Required for FIONREAD to inspect the socket buffer
+#include <time.h>      // Required for seeding rand()
+
+#define LOSS_PROBABILITY 30 // 30% chance of ACK loss simulation
 
 int main()
 {
     int s, ns;
-
-    int base = 0;
-    int nextSeq = 0;
-
-    int window = 3;
-    int total = 5;
-
     char msg[100], ack[100];
-
     struct sockaddr_in server, client;
     socklen_t len;
 
     s = socket(AF_INET, SOCK_STREAM, 0);
 
-    // Allow quick port reuse to avoid "Address already in use" errors on restarts
     int opt = 1;
     setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 
@@ -30,124 +24,82 @@ int main()
     server.sin_addr.s_addr = INADDR_ANY;
 
     bind(s, (struct sockaddr*)&server, sizeof(server));
-
     listen(s, 5);
 
     printf("Server waiting...\n");
 
     len = sizeof(client);
     ns = accept(s, (struct sockaddr*)&client, &len);
+    printf("Connection established.\n");
 
-    while(base < total)
+    // Seed the random number generator using system time
+    srand(time(0));
+    int expected = 1;
+
+    while(1)
     {
-        /*
-            1. Send frames inside the sliding window
-        */
-        while(nextSeq < base + window && nextSeq < total)
+        memset(msg, 0, sizeof(msg));
+        int bytes_received = recv(ns, msg, sizeof(msg), 0);
+
+        // Check if the client disconnected or sent the exit string
+        if (bytes_received <= 0 || strcmp(msg, "Exit") == 0)
         {
-            sprintf(msg, "Frame %d", nextSeq);
-
-            send(ns, msg, strlen(msg)+1, 0);
-
-            printf("Sent: %s\n", msg);
-
-            sleep(1); // Delay to make visualizing the window easier
-
-            nextSeq++;
-        }
-
-        /*
-            2. Process primary ACK/NACK feedback
-        */
-        int bytes_received = recv(ns, ack, sizeof(ack), 0);
-
-        // Check if client disconnected or connection dropped
-        if (bytes_received <= 0)
-        {
-            printf("Client disconnected unexpectedly. Terminating server...\n");
+            printf("Client finished transmission. Terminating server...\n");
             break;
         }
 
-        printf("Received: %s\n", ack);
-
-        /* NACK handling */
-        if(strncmp(ack, "NACK", 4) == 0)
-        {
-            int lost;
-            sscanf(ack, "NACK %d", &lost);
-
-            printf("Retransmitting from Frame %d\n", lost);
-
-            base = lost;
-            nextSeq = lost;
-        }
-        /* ACK handling */
-        else if(strncmp(ack, "ACK", 3) == 0)
-        {
-            int ackno;
-            sscanf(ack, "ACK %d", &ackno);
-            
-            if (ackno >= base) 
-            {
-                base = ackno + 1;
-            }
+        int frame;
+        if (sscanf(msg, "Frame %d", &frame) != 1) {
+            continue;
         }
 
-        /*
-            3. Drain the buffer: Check and process any additional pending ACKs/NACKs
-               sitting right behind the first one in the socket pipeline.
-        */
-        int bytes_available = 0;
-        ioctl(ns, FIONREAD, &bytes_available);
+        printf("Received: %s\n", msg);
 
-        while(bytes_available > 0)
+        /* 1. IN-ORDER FRAME HANDLING */
+        if(frame == expected)
         {
-            bytes_received = recv(ns, ack, sizeof(ack), 0);
-
-            if (bytes_received <= 0)
+            // Simulate Random Network ACK Drop
+            if(rand() % 100 >= LOSS_PROBABILITY)
             {
-                break;
+                memset(ack, 0, sizeof(ack));
+                sprintf(ack, "ACK %d", frame);
+
+                send(ns, ack, strlen(ack) + 1, 0);
+                printf("Sent: %s\n\n", ack);
+
+                expected++; // Accept frame and advance expectation tracker
             }
-
-            printf("Received (buffered): %s\n", ack);
-
-            if(strncmp(ack, "NACK", 4) == 0)
+            else
             {
-                int lost;
-                sscanf(ack, "NACK %d", &lost);
-
-                printf("Retransmitting from Frame %d\n", lost);
-
-                base = lost;
-                nextSeq = lost;
+                // Frame arrived fine, but we intentionally drop the reply
+                printf("ACK for Frame %d lost! (Simulated Loss)\n\n", frame);
                 
-                // Instantly break ACK processing loop to go back and retransmit
-                break; 
+                // CRITICAL: We DO NOT increment expected here because 
+                // from the client's point of view, this frame was never finalized.
             }
-            else if(strncmp(ack, "ACK", 3) == 0)
-            {
-                int ackno;
-                sscanf(ack, "ACK %d", &ackno);
-                
-                if (ackno >= base) 
-                {
-                    base = ackno + 1;
-                }
-            }
-            
-            // Check if any more bytes are still left in the buffer line
-            ioctl(ns, FIONREAD, &bytes_available);
         }
-    }
-
-    // Only prints if the window cleanly finishes without crashing/breaking early
-    if (base >= total)
-    {
-        printf("All frames transmitted successfully\n");
+        /* 2. OUT-OF-ORDER FRAME HANDLING */
+        else
+        {
+            printf("Discarded Out-of-Order Frame %d (Still expecting Frame %d)\n", frame, expected);
+            
+            // Send a cumulative ACK for the last successful packet received
+            int last_ack = expected - 1;
+            if (last_ack >= 1)
+            {
+                memset(ack, 0, sizeof(ack));
+                sprintf(ack, "ACK %d", last_ack);
+                send(ns, ack, strlen(ack) + 1, 0);
+                printf("Sent cumulative: %s\n\n", ack);
+            }
+            else
+            {
+                printf("No prior safe packets to ACK yet.\n\n");
+            }
+        }
     }
 
     close(ns);
     close(s);
-
     return 0;
 }

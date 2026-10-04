@@ -45,7 +45,7 @@ CYCLE II - LEX AND YACC
     gcc lex.yy.c -o name
     ./name
 
-METHOD 3: YACC + LEX -> BISON + FLEX -> GCC -> RUN
+METHOD 3: YACC + LEX -> YACC + FLEX -> GCC -> RUN
 Applies to these pairs:
   var.y  + var.l  - variable-name validator
   calc.y + calc.l - calculator
@@ -53,40 +53,39 @@ Applies to these pairs:
   for.y  + for.l  - FOR-statement validator
 
 The .y file contains grammar rules; the .l file contains token patterns.
-Bison's -y -d options generate y.tab.c and y.tab.h, which these lexers expect.
+yacc -d generates y.tab.c and y.tab.h, which these lexers expect.
 Flex generates lex.yy.c. Compile y.tab.c and lex.yy.c together.
 Build one pair at a time: generated files are overwritten by the next build.
 
   Variable-name validator:
     gedit var.l var.y varinput.txt var.txt &
-    bison -y -d var.y
+    yacc -d var.y
     flex var.l
     gcc y.tab.c lex.yy.c -o var
     ./var
 
   Calculator:
     gedit calc.l calc.y calcinput.txt calc.txt &
-    bison -y -d calc.y
+    yacc -d calc.y
     flex calc.l
     gcc y.tab.c lex.yy.c -o calc
     ./calc
 
   Abstract syntax tree:
     gedit ast.l ast.y astinput.txt ast.txt &
-    bison -y -d ast.y
+    yacc -d ast.y
     flex ast.l
     gcc y.tab.c lex.yy.c -o ast
     ./ast
 
   FOR-statement validator:
     gedit for.l for.y forinput.txt for.txt &
-    bison -y -d for.y
+    yacc -d for.y
     flex for.l
     gcc y.tab.c lex.yy.c -o for
     ./for
 
-If yacc is available, yacc -d calc.y can replace bison -y -d calc.y
-(substitute var, ast or for as needed). Compile only after each command succeeds.
+Compile only after each command succeeds.
 
 ========================================
        TYPING INPUT IN THE TERMINAL

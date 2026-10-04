@@ -135,8 +135,4 @@ for:
   It prints Valid FOR statement or Invalid FOR statement, then exits.
   Run ./for again for another case. This checks the PDF's restricted grammar.
 
-gedit is optional; it only opens the files. The trailing & lets you keep using
-the terminal while the editor is open. run.ps1 is a Windows helper and is not
-needed for these Ubuntu commands.
-
 ========================================

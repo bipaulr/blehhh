@@ -5,7 +5,10 @@ param(
     [string]$InputFile
 )
 $ErrorActionPreference = 'Stop'
-if (-not $InputFile) { $InputFile = Join-Path $PSScriptRoot ($Program + 'input.txt') }
+if (-not $InputFile) {
+    $defaultInput = if ($Program -eq 'lex') { 'lexsource.txt' } else { $Program + 'input.txt' }
+    $InputFile = Join-Path $PSScriptRoot $defaultInput
+}
 $inputPath = (Resolve-Path -LiteralPath $InputFile).Path
 # Only whole lines beginning with # (optionally indented) are explanatory comments.
 $lines = @(Get-Content -LiteralPath $inputPath | Where-Object { $_ -notmatch '^\s*#' })
@@ -58,7 +61,9 @@ try {
         $sources = if (Test-Path -LiteralPath $yFile) { @('y.tab.c','lex.yy.c') } else { @('lex.yy.c') }
         Invoke-Tool 'gcc' ($sources + @('-o',$exe))
     }
-    if ($Program -in @('var','for')) {
+    if ($Program -eq 'lex') {
+        Invoke-Tool $exe @($inputPath)
+    } elseif ($Program -in @('var','for')) {
         # The PDF's YYACCEPT stops after one statement, so restart for each case.
         foreach ($line in $lines) { Send-Input ($line + "`n") }
     } else { Send-Input (($lines -join "`n") + "`n") }

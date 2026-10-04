@@ -2,6 +2,7 @@ PLEASE DO 'history -c' after and then 'clear'
 
 CYCLE I - C PROGRAMS
 1. lex.c  / lexinput.txt  / lex.txt  - lexical analyzer
+   lexsource.txt - actual source text read by the lexical analyzer
 2. ec.c   / ecinput.txt   / ec.txt   - epsilon closure of all NFA states
 3. enfa.c / enfainput.txt / enfa.txt - remove epsilon transitions from an NFA
 4. nfa.c  / nfainput.txt  / nfa.txt  - NFA to DFA subset construction
@@ -15,9 +16,11 @@ CYCLE II - LEX AND YACC
 10. for.l, for.y  / forinput.txt  / for.txt  - FOR-statement syntax check
 
   Lexical analyzer:
-    gedit lex.c lexinput.txt lex.txt &
+    gedit lex.c lexsource.txt lexinput.txt lex.txt &
     gcc lex.c -o lex
-    ./lex
+    ./lex lexsource.txt
+    Or run ./lex and type lexsource.txt at the filename prompt.
+    Edit lexsource.txt to change the source program being analyzed.
 
   Epsilon closure:
     gedit ec.c ecinput.txt ec.txt &
@@ -104,8 +107,11 @@ ec, enfa, nfa, dfa:
     3 e 0
 
 lex:
-  Type C-like text. It prints tokens as it reads them.
-  Press Ctrl+D on an empty line when finished to signal end of input.
+  Input is read from a file, not typed as source code in the terminal.
+  Run ./lex lexsource.txt, or run ./lex and enter a source filename when asked.
+  It prints tokens from that file and exits automatically at the end of the file.
+  lexinput.txt is an annotated reference; lexsource.txt contains the actual data.
+  For another file: ./lex myprogram.c (quote the path if it contains spaces).
 
 name:
   Type one string per line. Each non-empty line prints ACCEPT or REJECT.

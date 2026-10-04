@@ -1,4 +1,9 @@
-# C-like text is read until EOF. Spaces and blank lines are ignored.
+# Reference only: the actual source text is in lexsource.txt.
+# Run ./lex lexsource.txt, or run ./lex and enter lexsource.txt when asked.
+# To analyze another program, save its text in a file and supply that filename.
+# Only the filename is typed in the terminal; source text is read from the file.
+# Do not pass this annotated reference file: its # explanations would become tokens.
+# Spaces and blank lines in the source file are ignored.
 # int and while are keywords; main and x1 are identifiers; 42 and 0 are numbers.
 # Each punctuation character is a separate SYMBOL, including each minus in --.
 int  main() {

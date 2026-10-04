@@ -1,0 +1,11 @@
+# First line: states, alphabet size, number of transitions.
+# Maximum 16 states and 9 symbols (a-i). No epsilon moves; q0 is the start.
+3 2 4
+# Each transition: source state, symbol, destination state.
+0 a 0
+0 b 0
+# q0 has two destinations on a, which is allowed in an NFA.
+0 a 1
+1 b 2
+# Final-state count, then final states: one final state, q2.
+1 2

@@ -1,0 +1,8 @@
+MINIMIZE A DFA: TABLE FILLING
+
+ALGORITHM
+1.  Mark a pair of states as different if exactly one of them is final.
+2.  Repeat: if, on some symbol, a pair goes to a pair already marked different, mark it too. Stop when nothing
+ changes.
+3.  Pairs never marked are equivalent. Merge each group under its smallest state number.
+4.  Print each group with its moves pointing at group names.

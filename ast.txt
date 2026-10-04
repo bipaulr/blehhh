@@ -1,0 +1,9 @@
+BNF TO YACC: ABSTRACT SYNTAX TREE
+
+ALGORITHM
+1.  Each BNF rule becomes one yacc rule (expr, term, factor). The three layers make * and / bind tighter than +
+ and -.
+2.  A tree node stores a label and two child pointers. make_node(label, left, right) creates one.
+3.  Operator rule: $$ = make_node(op, $1, $3). Name or number: a leaf node with no children. Brackets: just
+ pass $2 up.
+4.  print_tree visits right child, then the node, then left child, indenting 4 spaces per level.

@@ -1,0 +1,10 @@
+YACC: SYNTAX CHECK OF A FOR STATEMENT
+
+ALGORITHM
+1.  Lex: for returns FOR, int returns T, names return ID, numbers return NUM, comparison operators return REL,
+ ++ or -- return INC. Other characters pass through.
+2.  Yacc: for_stmt = FOR ( init ; cond ; update ) body newline.
+3.  init is ID = expr, or int ID = expr, or empty. cond is expr REL expr, or empty. update is ID INC, or ID = expr,
+ or empty.
+4.  body is a lone ; or a block { assignments }. expr is simple arithmetic.
+5.  If the whole line matches, print Valid FOR statement. Otherwise yyerror prints Invalid FOR statement.

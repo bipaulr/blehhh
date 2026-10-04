@@ -1,0 +1,16 @@
+# First line: number of states (maximum 20), alphabet size (maximum 9).
+# Symbols are consecutive letters a, b, ...; q0 is the start.
+# Provide a complete DFA with every state reachable, as assumed in the PDF.
+5 2
+# Row q0: destination on a, then destination on b.
+1 2
+# Row q1.
+1 3
+# Row q2 (same transitions as q0, so these states merge).
+1 2
+# Row q3.
+1 4
+# Row q4.
+1 2
+# Final-state count followed by state numbers: q4 is the only final state.
+1 4

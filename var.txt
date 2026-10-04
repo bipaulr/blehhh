@@ -1,0 +1,7 @@
+YACC: VALID VARIABLE NAME
+
+ALGORITHM
+1.  Lex file: a letter returns L, a digit returns D, any other character is passed on as itself.
+2.  Yacc grammar: variable = L rest newline, and rest = zero or more of L or D.
+3.  So a name must start with a letter, followed by any letters or digits.
+4.  If the grammar matches, print Valid variable. If not, yacc calls yyerror, which prints Invalid variable.

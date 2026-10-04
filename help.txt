@@ -1,67 +1,142 @@
-========================================
-        LAB FILES GUIDE - HELP.TXT
-========================================
+PLEASE DO 'history -c' after and then 'clear'
 
-REMINDER !!!!!!!! : PLEASE RUN 'history -c' in terminal after curl to remove all traces of curl
-replace 'help.txt' with required filename
+CYCLE I - C PROGRAMS
+1. lex.c  / lexinput.txt  / lex.txt  - lexical analyzer
+2. ec.c   / ecinput.txt   / ec.txt   - epsilon closure of all NFA states
+3. enfa.c / enfainput.txt / enfa.txt - remove epsilon transitions from an NFA
+4. nfa.c  / nfainput.txt  / nfa.txt  - NFA to DFA subset construction
+5. dfa.c  / dfainput.txt  / dfa.txt  - DFA minimization by table filling
 
+CYCLE II - LEX AND YACC
+6. name.l         / nameinput.txt / name.txt - reject lines containing name
+7. var.l, var.y   / varinput.txt  / var.txt  - variable-name validation
+8. calc.l, calc.y / calcinput.txt / calc.txt - calculator
+9. ast.l, ast.y   / astinput.txt  / ast.txt  - BNF grammar and syntax tree
+10. for.l, for.y  / forinput.txt  / for.txt  - FOR-statement syntax check
 
-TCP
-  tcpclient.c   - TCP client that connects and exchanges messages
-  tcpserver.c   - TCP server that accepts and exchanges messages
-  tcp.txt       - Algorithm for TCP
+  Lexical analyzer:
+    gedit lex.c lexinput.txt lex.txt &
+    gcc lex.c -o lex
+    ./lex
 
-UDP
-  udpclient.c   - UDP client that sends and receives messages
-  udpserver.c   - UDP server that receives and responds to messages
-  udp.txt       - Algorithm for UDP
+  Epsilon closure:
+    gedit ec.c ecinput.txt ec.txt &
+    gcc ec.c -o ec
+    ./ec
 
-FTP
-  ftpclient.c   - Client that requests and receives a file from server
-  ftpserver.c   - Server that sends requested file to client
-  ftp.txt       - Algorithm for FTP
+  Remove epsilon transitions:
+    gedit enfa.c enfainput.txt enfa.txt &
+    gcc enfa.c -o enfa
+    ./enfa
 
-SMTP
-  smtpclient.c  - SMTP client that sends email commands and mail body
-  smtpserver.c  - SMTP server that handles email commands and responses
-  smtp.txt      - Algorithm for SMTP
+  NFA to DFA:
+    gedit nfa.c nfainput.txt nfa.txt &
+    gcc nfa.c -o nfa
+    ./nfa
 
-STOP AND WAIT ARQ
-  sawclient.c   - Stop and Wait sender code
-  sawserver.c   - Stop and Wait receiver code
-  saw.txt       - Algorithm for Stop and Wait ARQ
+  DFA minimization:
+    gedit dfa.c dfainput.txt dfa.txt &
+    gcc dfa.c -o dfa
+    ./dfa
 
-GO BACK N ARQ
-  gbclient.c    - Go Back N receiver code
-  gbserver.c    - Go Back N sender code
-  gb.txt        - Algorithm for Go Back N ARQ
-
-SELECTIVE REPEAT ARQ
-  srclient.c    - Selective Repeat receiver code
-  srserver.c    - Selective Repeat sender code
-  sr.txt        - Algorithm for Selective Repeat ARQ
-
-LEAKY BUCKET
-  leaky.c       - Leaky Bucket congestion control code
-  leaky.txt     - Algorithm for Leaky Bucket
-
-DISTANCE VECTOR ROUTING
-  dvr.c         - Bellman Ford Distance Vector Routing code
-  dvr.txt       - Algorithm for DVR
-
-LINK STATE ROUTING
-  lsr.c         - Dijkstra Link State Routing code
-  lsr.txt       - Algorithm for LSR
-
-NS2 SIMLULATOR
-  ls.tcl          - Link State simulation script
-  ls_analysis.awk - LS performance metric analyzer
-  dv.tcl          - Distance Vector simulation script
-  dv_analysis.awk - DV performance metric analyzer
   
-========================================
-NOTE: For all client/server programs,
-always run SERVER first, then CLIENT
-========================================
+    gedit name.l nameinput.txt name.txt &
+    flex name.l
+    gcc lex.yy.c -o name
+    ./name
 
-ALL THE BEST FELLOW CURLER. DONT GET CAUGHT PLEASE
+METHOD 3: YACC + LEX -> BISON + FLEX -> GCC -> RUN
+Applies to these pairs:
+  var.y  + var.l  - variable-name validator
+  calc.y + calc.l - calculator
+  ast.y  + ast.l  - abstract syntax tree
+  for.y  + for.l  - FOR-statement validator
+
+The .y file contains grammar rules; the .l file contains token patterns.
+Bison's -y -d options generate y.tab.c and y.tab.h, which these lexers expect.
+Flex generates lex.yy.c. Compile y.tab.c and lex.yy.c together.
+Build one pair at a time: generated files are overwritten by the next build.
+
+  Variable-name validator:
+    gedit var.l var.y varinput.txt var.txt &
+    bison -y -d var.y
+    flex var.l
+    gcc y.tab.c lex.yy.c -o var
+    ./var
+
+  Calculator:
+    gedit calc.l calc.y calcinput.txt calc.txt &
+    bison -y -d calc.y
+    flex calc.l
+    gcc y.tab.c lex.yy.c -o calc
+    ./calc
+
+  Abstract syntax tree:
+    gedit ast.l ast.y astinput.txt ast.txt &
+    bison -y -d ast.y
+    flex ast.l
+    gcc y.tab.c lex.yy.c -o ast
+    ./ast
+
+  FOR-statement validator:
+    gedit for.l for.y forinput.txt for.txt &
+    bison -y -d for.y
+    flex for.l
+    gcc y.tab.c lex.yy.c -o for
+    ./for
+
+If yacc is available, yacc -d calc.y can replace bison -y -d calc.y
+(substitute var, ast or for as needed). Compile only after each command succeeds.
+
+========================================
+       TYPING INPUT IN THE TERMINAL
+========================================
+Press Enter after each input line. Programs may wait silently without a prompt.
+Keep the final newline, especially for the Lex/Yacc examples.
+
+ec, enfa, nfa, dfa:
+  Read the counts and data described in their reference input files.
+  They print the result and exit after all required values are entered.
+  Example after ./ec:
+    4 4
+    0 e 1
+    1 e 2
+    2 a 3
+    3 e 0
+
+lex:
+  Type C-like text. It prints tokens as it reads them.
+  Press Ctrl+D on an empty line when finished to signal end of input.
+
+name:
+  Type one string per line. Each non-empty line prints ACCEPT or REJECT.
+  Matching the substring name ignores letter case; empty lines are ignored.
+  Press Ctrl+D on an empty line when finished.
+
+var:
+  Type ONE variable name and press Enter, for example abc1.
+  It prints Valid variable or Invalid variable, then exits.
+  Run ./var again for another case. Only letters/digits are allowed,
+  and the first character must be a letter; underscores are invalid here.
+
+calc:
+  Type one expression per line, for example 2+3*4 or (2+3)*4.
+  It prints the result and accepts the next expression.
+  Press Ctrl+D on an empty line when finished.
+
+ast:
+  Type one expression per line, for example a+b*c or (a+b)*5.
+  It prints a sideways syntax tree and accepts the next expression.
+  Press Ctrl+D on an empty line when finished.
+
+for:
+  Type ONE complete FOR statement on one line and press Enter.
+  Example: for(i=0;i<10;i++);
+  It prints Valid FOR statement or Invalid FOR statement, then exits.
+  Run ./for again for another case. This checks the PDF's restricted grammar.
+
+gedit is optional; it only opens the files. The trailing & lets you keep using
+the terminal while the editor is open. run.ps1 is a Windows helper and is not
+needed for these Ubuntu commands.
+
+========================================

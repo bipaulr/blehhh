@@ -1,0 +1,7 @@
+# One arithmetic expression per line; identifiers and integer literals are leaves.
+# Operators are +, -, *, /; parentheses control grouping; unary minus is unsupported.
+# The first tree has + at its root and * as its right child.
+a+b*c
+# The second tree has * at its root and + as its left child.
+(a+b)*5
+# Trees print sideways: right child above, left child below, four spaces per level.

@@ -1,0 +1,9 @@
+LEXICAL ANALYZER IN C
+
+ALGORITHM
+1.  Read characters one by one until the end of input.
+2.  If the character is a space, tab or newline, skip it.
+3.  If it is a letter or underscore, keep reading letters, digits and underscores into a word. Compare the word
+ with the keyword list and print KEYWORD or IDENTIFIER.
+4.  If it is a digit, keep reading digits and print NUMBER.
+5.  Anything else is printed as a SYMBOL.

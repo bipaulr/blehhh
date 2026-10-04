@@ -1,0 +1,7 @@
+EPSILON CLOSURE OF ALL NFA STATES
+
+ALGORITHM
+1.  Read the transitions. Keep only the epsilon moves (written e in the input): mark reach[from][to] = 1.
+2.  Mark reach[i][i] = 1, because every state reaches itself.
+3.  Chain moves: if i reaches k and k reaches j, then i reaches j. Repeat for every k.
+4.  Row i of the table is the epsilon-closure of state i. Print it.

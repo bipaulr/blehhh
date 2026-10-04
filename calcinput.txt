@@ -1,0 +1,13 @@
+# One expression per line. Values are doubles; spaces and tabs are ignored.
+# Multiplication precedes addition: 14.
+2+3*4
+# Parentheses change the grouping: 20.
+(2+3)*4
+# Unary minus: -3.
+-5+2
+# Division yields 2.5.
+10/4
+# Reports division by zero, then continues with the next line.
+5/0
+# Invalid syntax reports error.
+2+*3

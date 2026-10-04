@@ -1,0 +1,9 @@
+# One non-empty string per line. Matching name ignores letter case.
+# Expected: ACCEPT, REJECT, REJECT, ACCEPT, REJECT, ACCEPT.
+# Empty lines produce no output.
+hello
+NAMEina
+xnamex
+abc
+Name
+nam

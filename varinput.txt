@@ -1,0 +1,10 @@
+# Each line is an independent test; run.ps1 launches a fresh parser for each.
+# A name must begin with a letter, followed only by letters or digits.
+# Underscores and spaces are invalid in this exercise, even though C permits underscores.
+abc1
+# Starts with a digit: Invalid variable.
+9abc
+# Contains a hyphen: Invalid variable.
+ab-c
+# A single letter is valid.
+a

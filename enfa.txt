@@ -1,0 +1,8 @@
+REMOVE EPSILON MOVES FROM AN NFA
+
+ALGORITHM
+1.  Find the epsilon-closure of every state (same idea as ec.c).
+2.  For each state q and symbol a: take every state p in the epsilon-closure of q, follow symbol a from p to r, then add
+ the whole epsilon-closure of r. The result is the new move set.
+3.  State q becomes final if its epsilon-closure contains an old final state.
+4.  Print the new moves and the final states.

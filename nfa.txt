@@ -1,0 +1,9 @@
+NFA TO DFA: SUBSET CONSTRUCTION
+
+ALGORITHM
+1.  The DFA start state is the set {q0}.
+2.  For each DFA state S and symbol a: collect every state you can reach from any member of S on a. That set
+ is the target.
+3.  If the target is new, it becomes a new DFA state. Include the empty set as a dead state with self-loops. Record the move S on a to target.
+4.  Repeat until no new set appears.
+5.  A DFA state is final if its set contains an NFA final state.

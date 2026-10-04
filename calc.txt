@@ -1,0 +1,9 @@
+LEX AND YACC CALCULATOR
+
+ALGORITHM
+1.  Lex: a number returns N and its value goes in yylval. Spaces are skipped. Other characters pass through as
+ themselves.
+2.  Yacc precedence lines: * and / bind tighter than + and -. Unary minus binds tightest.
+3.  Rule expr = expr + expr sets $$ = $1 + $3. The other operators work the same way. Brackets set $$ = $2.
+4.  Division by zero prints a message. The rule input = input error newline skips a bad line and carries on.
+5.  Each line is evaluated and printed as = value.

@@ -1,0 +1,9 @@
+# First line: number of states, then number of transitions.
+# States are numbered 0 through n-1; maximum 20 states.
+4 4
+# Each transition: source state, symbol, destination state.
+# e means epsilon (no input consumed); other symbols are ignored by this exercise.
+0 e 1
+1 e 2
+2 a 3
+3 e 0

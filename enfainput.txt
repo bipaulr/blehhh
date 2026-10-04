@@ -1,0 +1,12 @@
+# First line: states, alphabet size, number of transitions (maximum 16 states).
+# Alphabet consists of consecutive letters from a; e is reserved for epsilon.
+# Use at most 4 letters (a-d) here to avoid the reserved epsilon marker e.
+3 2 5
+# Each transition: source, symbol, destination. States are numbered from 0.
+0 a 0
+0 e 1
+1 b 1
+1 e 2
+2 a 2
+# Final-state count followed by that many state numbers: one final state, q2.
+1 2

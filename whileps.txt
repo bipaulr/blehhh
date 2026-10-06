@@ -1,0 +1,45 @@
+PSEUDOCODE: WHILE-STATEMENT VALIDATION USING LEX AND YACC
+
+FUNCTION NEXT_TOKEN
+    MATCH the longest available token
+    IF token is "while"
+        RETURN WHILE
+    ELSE IF token is an identifier
+        RETURN ID
+    ELSE IF token is an integer
+        RETURN NUM
+    ELSE IF token is <, >, <=, >=, == or !=
+        RETURN REL
+    ELSE IF character is a space or tab
+        SKIP it AND CONTINUE scanning
+    ELSE
+        RETURN the character itself, or EOF at end of input
+    END IF
+END FUNCTION
+
+GRAMMAR
+    while_stmt = WHILE '(' cond ')' body newline
+    cond = expr REL expr OR expr
+    expr = expr '+' expr OR expr '-' expr
+         OR expr '*' expr OR expr '/' expr
+         OR '(' expr ')' OR ID OR NUM
+    body = ';' OR '{' stmts '}'
+    stmts = stmts ID '=' expr ';' OR empty
+END GRAMMAR
+
+BEGIN
+    PRINT "Enter a WHILE statement: "
+    CALL Yacc parser using NEXT_TOKEN and the grammar
+    USE higher precedence for * and / than for + and -
+
+    IF one complete while_stmt is parsed successfully
+        PRINT "Valid WHILE statement"
+        ACCEPT immediately AND STOP successfully
+    ELSE
+        PRINT "Invalid WHILE statement"
+        STOP with parsing failure
+    END IF
+END
+
+NOTE: Check one statement per run. Empty conditions are invalid.
+The body supports assignments, not nested loops, declarations or ++/--.

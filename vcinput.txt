@@ -1,0 +1,13 @@
+# Type one string per line and press Enter. Finish with Ctrl+D on Ubuntu.
+# Each English letter is printed as a vowel or consonant, in its original order.
+# Uppercase and lowercase are both supported; a, e, i, o, u are vowels.
+# All other English letters, including y, are consonants.
+# Spaces, digits and punctuation are ignored. Counts reset after every line.
+# Hello World: 3 vowels (e, o, o) and 7 consonants.
+Hello World
+# Five vowels and zero consonants.
+AEIOU
+# Zero vowels and five consonants.
+bcdfg
+# Zero vowels and zero consonants.
+123 !?

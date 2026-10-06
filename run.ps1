@@ -1,6 +1,6 @@
 param(
     [Parameter(Mandatory=$true)]
-    [ValidateSet('lex','ec','enfa','nfa','dfa','name','var','calc','ast','for')]
+    [ValidateSet('lex','ec','enfa','nfa','dfa','name','var','calc','ast','for','vc','while')]
     [string]$Program,
     [string]$InputFile
 )
@@ -33,7 +33,7 @@ function Send-Input([string]$Text) {
     $status = $process.ExitCode
     $process.Dispose()
     # Invalid var/for examples intentionally return yyparse's nonzero status.
-    if ($status -ne 0 -and $Program -notin @('var','for')) {
+    if ($status -ne 0 -and $Program -notin @('var','for','while')) {
         throw "Program failed with exit code $status"
     }
 }
@@ -63,7 +63,7 @@ try {
     }
     if ($Program -eq 'lex') {
         Invoke-Tool $exe @($inputPath)
-    } elseif ($Program -in @('var','for')) {
+    } elseif ($Program -in @('var','for','while')) {
         # The PDF's YYACCEPT stops after one statement, so restart for each case.
         foreach ($line in $lines) { Send-Input ($line + "`n") }
     } else { Send-Input (($lines -join "`n") + "`n") }

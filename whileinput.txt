@@ -1,0 +1,20 @@
+# Run the program again for each case; one complete statement is checked per run.
+# Type the statement on one line, then press Enter.
+# Valid: comparison condition and semicolon body.
+while(i<10);
+# Valid: assignment block; no execution takes place, only syntax checking.
+while(i<10){i=i+1;}
+# Valid: a non-empty numeric expression can be a condition.
+while(1);
+# Valid: identifier condition and empty block.
+while(flag){}
+# Valid: parentheses in arithmetic and multiple assignments in the block.
+while((i+1)<10){x=x+i;i=i+1;}
+# Invalid: a WHILE condition cannot be empty.
+while();
+# Invalid: missing body.
+while(i<10)
+# Invalid: missing semicolon after the assignment.
+while(i<10){i=i+1}
+# Restricted grammar: no nested loops, declarations, logical &&/||, unary minus
+# or ++/-- statements. Use i=i+1; instead of i++; inside the block.

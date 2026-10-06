@@ -1,0 +1,17 @@
+YACC: SYNTAX CHECK OF A WHILE STATEMENT
+
+ALGORITHM
+1. Print the input prompt and call the Yacc parser.
+2. Lex returns WHILE for while, ID for identifiers, NUM for integer literals,
+   and REL for <, >, <=, >=, == and !=. Skip spaces and tabs; return other
+   characters, including newline, as themselves.
+3. Check the structure: while ( condition ) body followed by newline.
+4. Require a non-empty condition: an arithmetic expression or two arithmetic
+   expressions separated by a comparison operator.
+5. Expressions contain identifiers, integers, +, -, *, / and parentheses.
+   Multiplication and division have higher precedence than addition/subtraction.
+6. Accept a semicolon body or a block containing zero or more assignments.
+7. If the statement matches, print Valid WHILE statement and exit.
+8. On a syntax error, print Invalid WHILE statement and exit with failure.
+
+This checks a restricted teaching grammar, not every form of valid C syntax.

@@ -1,0 +1,33 @@
+PSEUDOCODE: VOWELS AND CONSONANTS IN A STRING
+
+PROCEDURE PRINT_COUNTS
+    PRINT "Vowels:", vowels
+    PRINT "Consonants:", consonants
+    SET vowels = 0, consonants = 0, has_input = FALSE
+END PROCEDURE
+
+BEGIN
+    SET vowels = 0, consonants = 0, has_input = FALSE
+    PRINT "Enter a string: "
+
+    WHILE input remains
+        READ character
+        IF character is one of a, e, i, o, u in either case
+            PRINT "Vowel:", character
+            SET vowels = vowels + 1
+            SET has_input = TRUE
+        ELSE IF character is any other English letter
+            PRINT "Consonant:", character
+            SET consonants = consonants + 1
+            SET has_input = TRUE
+        ELSE IF character is newline
+            CALL PRINT_COUNTS
+        ELSE
+            SET has_input = TRUE
+        END IF
+    END WHILE
+
+    IF has_input
+        CALL PRINT_COUNTS
+    END IF
+END

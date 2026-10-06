@@ -1,5 +1,6 @@
 PLEASE DO 'history -c' after and then 'clear'
 
+
 CYCLE I - C PROGRAMS
 1. lex.c  / lexinput.txt  / lex.txt  - lexical analyzer
    lexsource.txt - actual source text read by the lexical analyzer
@@ -7,6 +8,7 @@ CYCLE I - C PROGRAMS
 3. enfa.c / enfainput.txt / enfa.txt - remove epsilon transitions from an NFA
 4. nfa.c  / nfainput.txt  / nfa.txt  - NFA to DFA subset construction
 5. dfa.c  / dfainput.txt  / dfa.txt  - DFA minimization by table filling
+   lexw.c - alternative lexical analyzer that reads terminal input
 
 CYCLE II - LEX AND YACC
 6. name.l         / nameinput.txt / name.txt - reject lines containing name
@@ -14,6 +16,10 @@ CYCLE II - LEX AND YACC
 8. calc.l, calc.y / calcinput.txt / calc.txt - calculator
 9. ast.l, ast.y   / astinput.txt  / ast.txt  - BNF grammar and syntax tree
 10. for.l, for.y  / forinput.txt  / for.txt  - FOR-statement syntax check
+11. vc.l / vcinput.txt / vc.txt / vcps.txt - vowels and consonants
+12. while.l, while.y / whileinput.txt / while.txt / whileps.txt - WHILE syntax check
+
+METHOD 1: C SOURCE -> GCC -> RUN
 
   Lexical analyzer:
     gedit lex.c lexsource.txt lexinput.txt lex.txt &
@@ -21,6 +27,12 @@ CYCLE II - LEX AND YACC
     ./lex lexsource.txt
     Or run ./lex and type lexsource.txt at the filename prompt.
     Edit lexsource.txt to change the source program being analyzed.
+
+  Lexical analyzer from terminal input:
+    gedit lexw.c &
+    gcc lexw.c -o lexw
+    ./lexw
+    Type C-like source text; finish with Ctrl+D on an empty line.
 
   Epsilon closure:
     gedit ec.c ecinput.txt ec.txt &
@@ -42,11 +54,20 @@ CYCLE II - LEX AND YACC
     gcc dfa.c -o dfa
     ./dfa
 
-  
+METHOD 2: LEX SOURCE -> FLEX -> GCC -> RUN
+Applies to name.l and vc.l. These programs do not need yacc.
+
+  Strings without the substring name:
     gedit name.l nameinput.txt name.txt &
     flex name.l
     gcc lex.yy.c -o name
     ./name
+
+  Vowels and consonants:
+    gedit vc.l vcinput.txt vc.txt &
+    flex vc.l
+    gcc lex.yy.c -o vc
+    ./vc
 
 METHOD 3: YACC + LEX -> YACC + FLEX -> GCC -> RUN
 Applies to these pairs:
@@ -54,90 +75,50 @@ Applies to these pairs:
   calc.y + calc.l - calculator
   ast.y  + ast.l  - abstract syntax tree
   for.y  + for.l  - FOR-statement validator
+  while.y + while.l - WHILE-statement validator
+  prac.y + prac.l - practice variable-name validator
 
 The .y file contains grammar rules; the .l file contains token patterns.
 yacc -d generates y.tab.c and y.tab.h, which these lexers expect.
 Flex generates lex.yy.c. Compile y.tab.c and lex.yy.c together.
 Build one pair at a time: generated files are overwritten by the next build.
 
-  Variable-name validator:
-    gedit var.l var.y varinput.txt var.txt &
+  Variable-name validator:  
     yacc -d var.y
     flex var.l
     gcc y.tab.c lex.yy.c -o var
     ./var
 
   Calculator:
-    gedit calc.l calc.y calcinput.txt calc.txt &
     yacc -d calc.y
     flex calc.l
     gcc y.tab.c lex.yy.c -o calc
     ./calc
 
   Abstract syntax tree:
-    gedit ast.l ast.y astinput.txt ast.txt &
     yacc -d ast.y
     flex ast.l
     gcc y.tab.c lex.yy.c -o ast
     ./ast
 
   FOR-statement validator:
-    gedit for.l for.y forinput.txt for.txt &
     yacc -d for.y
     flex for.l
     gcc y.tab.c lex.yy.c -o for
     ./for
 
-Compile only after each command succeeds.
+  WHILE-statement validator:
+    yacc -d while.y
+    flex while.l
+    gcc y.tab.c lex.yy.c -o while
+    ./while
 
-========================================
-       TYPING INPUT IN THE TERMINAL
-========================================
-Press Enter after each input line. Programs may wait silently without a prompt.
-Keep the final newline, especially for the Lex/Yacc examples.
+  Practice variable-name validator:
+    yacc -d prac.y
+    flex prac.l
+    gcc y.tab.c lex.yy.c -o prac
+    ./prac
 
-ec, enfa, nfa, dfa:
-  Read the counts and data described in their reference input files.
-  They print the result and exit after all required values are entered.
-  Example after ./ec:
-    4 4
-    0 e 1
-    1 e 2
-    2 a 3
-    3 e 0
 
-lex:
-  Input is read from a file, not typed as source code in the terminal.
-  Run ./lex lexsource.txt, or run ./lex and enter a source filename when asked.
-  It prints tokens from that file and exits automatically at the end of the file.
-  lexinput.txt is an annotated reference; lexsource.txt contains the actual data.
-  For another file: ./lex myprogram.c (quote the path if it contains spaces).
-
-name:
-  Type one string per line. Each non-empty line prints Accepted or Rejected.
-  Matching the substring name ignores letter case; empty lines are ignored.
-  Press Ctrl+D on an empty line when finished.
-
-var:
-  Type ONE variable name and press Enter, for example abc1.
-  It prints Valid variable or Invalid variable, then exits.
-  Run ./var again for another case. Only letters/digits are allowed,
-  and the first character must be a letter; underscores are invalid here.
-
-calc:
-  Type one expression per line, for example 2+3*4 or (2+3)*4.
-  It prints the result and accepts the next expression.
-  Press Ctrl+D on an empty line when finished.
-
-ast:
-  Type one expression per line, for example a+b*c or (a+b)*5.
-  It prints a sideways syntax tree and accepts the next expression.
-  Press Ctrl+D on an empty line when finished.
-
-for:
-  Type ONE complete FOR statement on one line and press Enter.
-  Example: for(i=0;i<10;i++);
-  It prints Valid FOR statement or Invalid FOR statement, then exits.
-  Run ./for again for another case. This checks the PDF's restricted grammar.
 
 ========================================

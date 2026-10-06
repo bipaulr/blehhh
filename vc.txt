@@ -1,0 +1,11 @@
+LEX: VOWELS AND CONSONANTS IN A STRING
+
+ALGORITHM
+1. Print the input prompt and initialize vowel and consonant counts to zero.
+2. Scan the input using Lex rules.
+3. For a, e, i, o or u in either case, print the letter as a vowel and increment
+   the vowel count. Place this rule before the general letter rule.
+4. For any other English letter, print it as a consonant and increment its count.
+5. Ignore spaces, digits and punctuation.
+6. At each newline, print both counts and reset them for the next string.
+7. At EOF, print counts for any final string without a newline, then stop.

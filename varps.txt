@@ -1,0 +1,33 @@
+PSEUDOCODE: VARIABLE-NAME VALIDATION USING LEX AND YACC
+
+FUNCTION NEXT_TOKEN
+    READ one character
+    IF character is a letter
+        RETURN L
+    ELSE IF character is a digit
+        RETURN D
+    ELSE
+        RETURN the character itself, or EOF at end of input
+    END IF
+END FUNCTION
+
+GRAMMAR
+    variable = L rest newline
+    rest = rest L OR rest D OR empty
+END GRAMMAR
+
+BEGIN
+    CALL Yacc parser using NEXT_TOKEN and the grammar
+
+    IF tokens match one letter followed by zero or more letters/digits,
+       ending with newline
+        PRINT "Valid variable"
+        ACCEPT immediately AND STOP successfully
+    ELSE
+        PRINT "Invalid variable"
+        STOP with parsing failure
+    END IF
+END
+
+NOTE: One case is checked per run. Spaces, underscores and punctuation are
+invalid. This exercise checks the given grammar, not all C identifier rules.

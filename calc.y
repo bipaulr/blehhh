@@ -4,7 +4,7 @@
 int yylex(void);
 void yyerror(const char *msg) {
     (void)msg;
-    puts("error");
+    printf("error\n");
 }
 %}
 %token N                /* a number */
@@ -23,7 +23,7 @@ expr  : expr '+' expr       { $$ = $1 + $3; }
       | expr '-' expr       { $$ = $1 - $3; }
       | expr '*' expr       { $$ = $1 * $3; }
       | expr '/' expr       { if ($3 == 0) {
-                                  puts("division by zero");
+                                  printf("division by zero\n");
                                   YYERROR;
                               }
                               $$ = $1 / $3; }

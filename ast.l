@@ -3,11 +3,14 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "y.tab.h"
-static char *copy_text(const char *s) {
-    char *p = malloc(strlen(s) + 1);
-    if (!p) { fputs("Out of memory\n", stderr); exit(EXIT_FAILURE); }
-    strcpy(p, s);
-    return p;
+static char *copy_text(const char *text) {
+    char *copy = malloc(strlen(text) + 1);
+    if (copy == NULL) {
+        fputs("Out of memory\n", stderr);
+        exit(EXIT_FAILURE);
+    }
+    strcpy(copy, text);
+    return copy;
 }
 %}
 %%

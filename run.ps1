@@ -58,7 +58,7 @@ try {
             } else { throw 'Install Bison (or win_bison/yacc) and add it to PATH.' }
         }
         Invoke-Tool $flex @('--nounistd','--never-interactive', (Join-Path $PSScriptRoot ($Program + '.l')))
-        $sources = if (Test-Path -LiteralPath $yFile) { @('y.tab.c','lex.yy.c') } else { @('lex.yy.c') }
+        $sources = @(if (Test-Path -LiteralPath $yFile) { 'y.tab.c'; 'lex.yy.c' } else { 'lex.yy.c' })
         Invoke-Tool 'gcc' ($sources + @('-o',$exe))
     }
     if ($Program -eq 'lex') {

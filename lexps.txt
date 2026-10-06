@@ -1,0 +1,73 @@
+PSEUDOCODE: LEXICAL ANALYZER FROM A FILE
+
+BEGIN
+    SET keywords = {int, float, char, if, else, while, for, return}
+
+    IF more than one filename argument is supplied
+        PRINT usage message
+        STOP with failure
+    END IF
+
+    IF a filename argument is supplied
+        SET filename = argument
+    ELSE
+        PRINT "Enter source filename: "
+        READ filename from terminal
+        REMOVE trailing newline characters
+    END IF
+
+    OPEN filename FOR reading AS source
+    IF opening fails
+        PRINT file-opening error
+        STOP with failure
+    END IF
+
+    WHILE READ_CHARACTER(source) gives ch other than EOF
+        IF ch is whitespace
+            CONTINUE
+        ELSE IF ch is a letter OR underscore
+            SET word = empty string
+            WHILE ch is a letter, digit or underscore AND length(word) < 63
+                APPEND ch TO word
+                SET ch = READ_CHARACTER(source)
+            END WHILE
+            IF ch is still a letter, digit or underscore
+                PRINT "Identifier exceeds 63 characters"
+                CLOSE source
+                STOP with failure
+            END IF
+            IF ch is not EOF
+                PUT_BACK ch INTO source
+            END IF
+            IF word is in keywords
+                PRINT "KEYWORD", word
+            ELSE
+                PRINT "IDENTIFIER", word
+            END IF
+        ELSE IF ch is a digit
+            SET word = empty string
+            WHILE ch is a digit AND length(word) < 63
+                APPEND ch TO word
+                SET ch = READ_CHARACTER(source)
+            END WHILE
+            IF ch is still a digit
+                PRINT "Number exceeds 63 characters"
+                CLOSE source
+                STOP with failure
+            END IF
+            IF ch is not EOF
+                PUT_BACK ch INTO source
+            END IF
+            PRINT "NUMBER", word
+        ELSE
+            PRINT "SYMBOL", ch
+        END IF
+    END WHILE
+
+    IF a file-reading error occurred
+        PRINT reading error
+        CLOSE source
+        STOP with failure
+    END IF
+    CLOSE source
+END

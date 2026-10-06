@@ -1,0 +1,53 @@
+PSEUDOCODE: CALCULATOR USING LEX AND YACC
+
+FUNCTION NEXT_TOKEN
+    IF the next text matches digits with an optional decimal fraction
+        SET token_value = numeric value of the matched text
+        RETURN N
+    ELSE IF next character is a space or tab
+        SKIP it AND CONTINUE scanning
+    ELSE
+        RETURN the character itself, or EOF at end of input
+    END IF
+END FUNCTION
+
+PRECEDENCE, FROM LOWEST TO HIGHEST
+    + and - : left associative
+    * and / : left associative
+    unary - : highest precedence
+END PRECEDENCE
+
+EXPRESSION ACTIONS
+    expr + expr -> RETURN left_value + right_value
+    expr - expr -> RETURN left_value - right_value
+    expr * expr -> RETURN left_value * right_value
+    expr / expr -> IF right_value = 0
+                       PRINT "division by zero"
+                       SIGNAL parse error for this line
+                   ELSE
+                       RETURN left_value / right_value
+                   END IF
+    ( expr )    -> RETURN inner expression value
+    - expr      -> RETURN negative expression value
+    N           -> RETURN token_value
+END ACTIONS
+
+BEGIN
+    CALL Yacc parser using NEXT_TOKEN, precedence and expression actions
+    UNTIL EOF
+        IF an expression followed by newline is parsed successfully
+            PRINT "=", expression_value
+        ELSE IF a syntax error occurs
+            PRINT "error"
+            DISCARD input through the next newline
+            RESET parser error state AND CONTINUE
+        ELSE IF division by zero was signalled
+            DISCARD input through the next newline
+            RESET parser error state AND CONTINUE
+        END IF
+    END UNTIL
+END
+
+NOTE: Values are doubles. A division-by-zero action prints its own message;
+it does not also print the ordinary "error" message for that same failure.
+An incomplete final line without newline may terminate with parsing failure.

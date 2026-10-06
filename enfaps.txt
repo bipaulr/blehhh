@@ -1,0 +1,64 @@
+PSEUDOCODE: REMOVE EPSILON MOVES FROM AN NFA
+
+BEGIN
+    READ n, k, m
+    VALIDATE 1 <= n <= 16, 1 <= k <= 4 AND m >= 0
+    SET alphabet = first k letters starting from 'a'
+    INITIALIZE closure[][], move[][][] and is_final[] to FALSE
+
+    FOR each of the m transitions
+        READ source, symbol, destination
+        VALIDATE states are in 0 TO n - 1
+        VALIDATE symbol is 'e' OR belongs to alphabet
+        IF symbol = 'e'
+            SET closure[source][destination] = TRUE
+        ELSE
+            SET move[source][symbol][destination] = TRUE
+        END IF
+    END FOR
+
+    READ final_count
+    VALIDATE 0 <= final_count <= n
+    FOR each final state
+        READ state
+        VALIDATE 0 <= state < n
+        SET is_final[state] = TRUE
+    END FOR
+
+    FOR i = 0 TO n - 1
+        SET closure[i][i] = TRUE
+    END FOR
+    FOR middle = 0 TO n - 1
+        FOR i = 0 TO n - 1
+            FOR j = 0 TO n - 1
+                IF closure[i][middle] AND closure[middle][j]
+                    SET closure[i][j] = TRUE
+                END IF
+            END FOR
+        END FOR
+    END FOR
+
+    FOR each state q
+        FOR each symbol a in alphabet
+            SET result = empty set
+            FOR each state p with closure[q][p] = TRUE
+                FOR each state r with move[p][a][r] = TRUE
+                    FOR each state s with closure[r][s] = TRUE
+                        ADD s TO result
+                    END FOR
+                END FOR
+            END FOR
+            PRINT new transition from q on a to result
+        END FOR
+    END FOR
+
+    PRINT "Final states:"
+    FOR each state q
+        IF any state in closure[q] is an original final state
+            PRINT q
+        END IF
+    END FOR
+END
+
+NOTE: Any failed read or validation prints an error and stops the program.
+'e' is reserved for epsilon; ordinary symbols are restricted to a-d.

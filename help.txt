@@ -114,7 +114,7 @@ lex:
   For another file: ./lex myprogram.c (quote the path if it contains spaces).
 
 name:
-  Type one string per line. Each non-empty line prints ACCEPT or REJECT.
+  Type one string per line. Each non-empty line prints Accepted or Rejected.
   Matching the substring name ignores letter case; empty lines are ignored.
   Press Ctrl+D on an empty line when finished.
 

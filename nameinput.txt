@@ -1,5 +1,5 @@
 # One non-empty string per line. Matching name ignores letter case.
-# Expected: ACCEPT, REJECT, REJECT, ACCEPT, REJECT, ACCEPT.
+# After the prompt, expected: Accepted, Rejected, Rejected, Accepted, Rejected, Accepted.
 # Empty lines produce no output.
 hello
 NAMEina

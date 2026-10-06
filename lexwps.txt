@@ -1,0 +1,47 @@
+PSEUDOCODE: LEXICAL ANALYZER FROM TERMINAL INPUT
+
+BEGIN
+    SET keywords = {int, float, char, if, else, while, for, return}
+
+    WHILE READ_CHARACTER(terminal) gives ch other than EOF
+        IF ch is whitespace
+            CONTINUE
+        END IF
+
+        IF ch is a letter OR underscore
+            SET word = empty string
+            WHILE ch is a letter, digit or underscore AND length(word) < 63
+                APPEND ch TO word
+                SET ch = READ_CHARACTER(terminal)
+            END WHILE
+            PUT_BACK ch INTO terminal input if it is not EOF
+
+            SET is_keyword = FALSE
+            FOR each keyword in keywords
+                IF word = keyword
+                    SET is_keyword = TRUE
+                END IF
+            END FOR
+
+            IF is_keyword
+                PRINT "KEYWORD", word
+            ELSE
+                PRINT "IDENTIFIER", word
+            END IF
+        ELSE IF ch is a digit
+            SET word = empty string
+            WHILE ch is a digit AND length(word) < 63
+                APPEND ch TO word
+                SET ch = READ_CHARACTER(terminal)
+            END WHILE
+            PUT_BACK ch INTO terminal input if it is not EOF
+            PRINT "NUMBER", word
+        ELSE
+            PRINT "SYMBOL", ch
+        END IF
+    END WHILE
+END
+
+NOTE: On Ubuntu, Ctrl+D on an empty line signals EOF.
+This version stores at most 63 characters per token. Longer runs are split
+into separate tokens, matching lexw.c; it has no long-token error check.

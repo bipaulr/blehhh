@@ -1,0 +1,55 @@
+PSEUDOCODE: NFA TO DFA USING SUBSET CONSTRUCTION
+
+BEGIN
+    READ n, k, m
+    VALIDATE 1 <= n <= 16, 1 <= k <= 9 AND m >= 0
+    SET alphabet = first k letters starting from 'a'
+    INITIALIZE nfa_move[state][symbol] to empty sets
+    SET final_set = empty set
+
+    FOR each of the m transitions
+        READ source, symbol, destination
+        VALIDATE states are in 0 TO n - 1 AND symbol belongs to alphabet
+        ADD destination TO nfa_move[source][symbol]
+    END FOR
+
+    READ final_count
+    VALIDATE 0 <= final_count <= n
+    FOR each final state
+        READ state
+        VALIDATE 0 <= state < n
+        ADD state TO final_set
+    END FOR
+
+    SET dfa_states = list containing {0}
+    SET d = 0
+    WHILE d < number of entries in dfa_states
+        SET current = dfa_states[d]
+        FOR each symbol a in alphabet
+            SET target = empty set
+            FOR each NFA state q in current
+                SET target = UNION(target, nfa_move[q][a])
+            END FOR
+            IF target does not already appear in dfa_states
+                APPEND target TO dfa_states
+            END IF
+            SET dfa_next[d][a] = target
+        END FOR
+        SET d = d + 1
+    END WHILE
+
+    FOR each DFA state and its transitions
+        IF its set intersects final_set
+            PRINT "*" to mark it final
+        END IF
+        PRINT the state set
+        FOR each symbol a in alphabet
+            PRINT a and its target set
+        END FOR
+    END FOR
+END
+
+NOTE: Any failed read or validation prints an error and stops the program.
+Sets are implemented as integer bitmasks. The empty set is included when
+reachable and acts as a dead state whose transitions all return to itself.
+This input NFA has no epsilon moves; state 0 is the start state.

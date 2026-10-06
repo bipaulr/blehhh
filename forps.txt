@@ -1,0 +1,71 @@
+PSEUDOCODE: FOR-STATEMENT VALIDATION USING LEX AND YACC
+
+FUNCTION NEXT_TOKEN
+    MATCH the longest available token
+    IF token is "for"
+        RETURN FOR
+    ELSE IF token is "int"
+        RETURN T
+    ELSE IF token is an identifier
+        RETURN ID
+    ELSE IF token is an integer
+        RETURN NUM
+    ELSE IF token is <, >, <=, >=, == or !=
+        RETURN REL
+    ELSE IF token is ++ or --
+        RETURN INC
+    ELSE IF next character is a space or tab
+        SKIP it AND CONTINUE scanning
+    ELSE
+        RETURN the character itself, or EOF at end of input
+    END IF
+END FUNCTION
+
+GRAMMAR
+    for_stmt = FOR '(' init ';' cond ';' update ')' body newline
+
+    init = ID '=' expr
+         OR T ID '=' expr
+         OR empty
+
+    cond = expr REL expr
+         OR empty
+
+    update = ID INC
+           OR ID '=' expr
+           OR empty
+
+    expr = expr '+' expr
+         OR expr '-' expr
+         OR expr '*' expr
+         OR expr '/' expr
+         OR ID
+         OR NUM
+
+    body = ';'
+         OR '{' stmts '}'
+
+    stmts = stmts ID '=' expr ';'
+          OR empty
+END GRAMMAR
+
+PRECEDENCE
+    * and / have higher precedence than + and -
+    Both operator levels are left associative
+END PRECEDENCE
+
+BEGIN
+    CALL Yacc parser using NEXT_TOKEN and the grammar
+    IF one complete for_stmt is parsed successfully
+        PRINT "Valid FOR statement"
+        ACCEPT immediately AND STOP successfully
+    ELSE
+        PRINT "Invalid FOR statement"
+        STOP with parsing failure
+    END IF
+END
+
+NOTE: One statement is checked per run. The body is a semicolon or a block
+of assignments. The grammar does not support parenthesized arithmetic,
+unary minus, nested loops or general C statements. Keyword rules precede
+the identifier rule so keywords win when matched lengths are equal.

@@ -1,0 +1,67 @@
+PSEUDOCODE: DFA MINIMIZATION USING TABLE FILLING
+
+FUNCTION REPRESENTATIVE(state)
+    SET j = 0
+    WHILE different[state][j] = TRUE
+        SET j = j + 1
+    END WHILE
+    RETURN j
+END FUNCTION
+
+BEGIN
+    READ n, k
+    VALIDATE 1 <= n <= 20 AND 1 <= k <= 9
+    FOR each state i
+        FOR each symbol a
+            READ next_state[i][a]
+            VALIDATE 0 <= next_state[i][a] < n
+        END FOR
+    END FOR
+
+    INITIALIZE is_final[] to FALSE
+    READ final_count
+    VALIDATE 0 <= final_count <= n
+    FOR each final state
+        READ state
+        VALIDATE 0 <= state < n
+        SET is_final[state] = TRUE
+    END FOR
+
+    FOR each pair of states i, j
+        SET different[i][j] = (is_final[i] != is_final[j])
+    END FOR
+
+    REPEAT
+        SET changed = FALSE
+        FOR i = 0 TO n - 1
+            FOR j = 0 TO i - 1
+                IF different[i][j] = FALSE
+                    FOR each symbol a
+                        SET x = next_state[i][a]
+                        SET y = next_state[j][a]
+                        IF different[x][y] = TRUE
+                            SET different[i][j] = TRUE
+                            SET different[j][i] = TRUE
+                            SET changed = TRUE
+                            BREAK symbol loop
+                        END IF
+                    END FOR
+                END IF
+            END FOR
+        END FOR
+    UNTIL changed = FALSE
+
+    FOR each state i
+        IF REPRESENTATIVE(i) = i
+            PRINT i, marked final if is_final[i]
+            PRINT all states j where different[i][j] = FALSE
+            FOR each symbol a
+                PRINT a, REPRESENTATIVE(next_state[i][a])
+            END FOR
+        END IF
+    END FOR
+END
+
+NOTE: Any failed read or validation prints an error and stops the program.
+Input must be a complete DFA. The program assumes all states are reachable;
+it merges equivalent states but does not remove unreachable states first.

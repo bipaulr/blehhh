@@ -2,7 +2,8 @@ LEX: STRINGS WITHOUT A NAME SUBSTRING
 
 ALGORITHM
 1.  Use the substring name. Matching ignores letter case.
-2.  Rule 1, .*name.*, matches a whole line containing name anywhere. It prints REJECT.
-3.  Rule 2, .+, matches any other non-empty line. It prints ACCEPT.
-4.  On a line with name, both rules match the whole line. Lex picks the rule written first, so REJECT wins.
-5.  Rule 3 swallows the newline.
+2.  Print "Enter a string: " and start the Lex scanner.
+3.  Rule 1, .*name.*, matches a whole line containing name anywhere. It prints Rejected.
+4.  Rule 2, .+, matches any other non-empty line. It prints Accepted.
+5.  On a line with name, both rules match the whole line. Lex picks the rule written first, so Rejected wins.
+6.  Rule 3 swallows the newline. Continue scanning until EOF.

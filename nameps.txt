@@ -1,0 +1,27 @@
+PSEUDOCODE: ACCEPT STRINGS WITHOUT THE SUBSTRING "name"
+
+BEGIN
+    SET matching to case-insensitive
+    PRINT "Enter a string: "
+
+    WHILE input remains
+        READ a line's characters, excluding its newline
+
+        IF line contains "name" in any letter case
+            PRINT "Rejected"
+        ELSE IF line is non-empty
+            PRINT "Accepted"
+        END IF
+
+        IGNORE the newline
+    END WHILE
+END
+
+LEX RULE ORDER
+    Rule 1: .*name.* -> PRINT "Rejected"
+    Rule 2: .+      -> PRINT "Accepted"
+    Rule 3: newline -> IGNORE
+
+NOTE: When both rules match the entire line, their matched lengths are equal.
+Lex chooses the first rule, so a line containing "name" is rejected.
+Empty lines produce no output.

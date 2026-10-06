@@ -3,7 +3,7 @@
 int yylex(void);
 void yyerror(const char *msg) {
     (void)msg;
-    puts("Invalid FOR statement");
+    printf("Invalid FOR statement\n");
 }
 %}
 /* T = the word int, REL = < > <= >= == !=, INC = ++ or -- */
@@ -13,7 +13,7 @@ void yyerror(const char *msg) {
 %%
 /* for ( init ; condition ; update ) body    then end of line */
 for_stmt : FOR '(' init ';' cond ';' update ')' body '\n'
-                { puts("Valid FOR statement"); YYACCEPT; }
+                { printf("Valid FOR statement\n"); YYACCEPT; }
          ;
 /* init part:  i = 0   or   int i = 0   or empty */
 init   : ID '=' expr

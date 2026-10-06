@@ -9,21 +9,13 @@ typedef struct node {
 Node *make_node(const char *label, Node *left, Node *right) {
     Node *p = malloc(sizeof(Node));
     if (p == NULL) {
-        fputs("Out of memory\n", stderr);
+        fprintf(stderr, "Out of memory\n");
         exit(EXIT_FAILURE);
     }
     p->label = label;
     p->left = left;
     p->right = right;
     return p;
-}
-/* Release leaves' copied text and every node after printing or on a parse error. */
-void free_tree(Node *p) {
-    if (p == NULL) return;
-    free_tree(p->left);
-    free_tree(p->right);
-    if (p->left == NULL && p->right == NULL) free((void *)p->label);
-    free(p);
 }
 /* Print the tree sideways: root at the left, right operand above, left operand below.
    Each level is indented by 4 spaces. */
@@ -38,7 +30,7 @@ void print_tree(Node *p, int depth) {
 int yylex(void);
 void yyerror(const char *msg) {
     (void)msg;
-    puts("syntax error");
+    printf("syntax error\n");
 }
 %}
 /* values passed around: text (from lex) or a tree node (built by the rules) */
@@ -48,11 +40,9 @@ void yyerror(const char *msg) {
 }
 %token <text> ID NUM
 %type <node> expr term factor
-%destructor { free($$); } <text>
-%destructor { free_tree($$); } <node>
 %%
 /* The input is a list of lines, each holding one expression. */
-lines : lines expr '\n'     { print_tree($2, 0); puts("-----"); free_tree($2); }
+lines : lines expr '\n'     { print_tree($2, 0); printf("-----\n"); }
       | lines error '\n'    { yyerrok; }
       | /* empty */
       ;

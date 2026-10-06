@@ -1,0 +1,64 @@
+PSEUDOCODE: ABSTRACT SYNTAX TREE USING LEX AND YACC
+
+FUNCTION NEXT_TOKEN
+    IF next text is an identifier OR an integer
+        COPY matched text
+        RETURN ID for an identifier OR NUM for an integer, with the copied text
+    ELSE IF next character is a space or tab
+        SKIP it AND CONTINUE scanning
+    ELSE
+        RETURN the character itself, or EOF at end of input
+    END IF
+END FUNCTION
+
+FUNCTION MAKE_NODE(label, left, right)
+    ALLOCATE a node
+    IF allocation fails
+        PRINT "Out of memory" AND STOP with failure
+    END IF
+    SET node.label = label
+    SET node.left = left
+    SET node.right = right
+    RETURN node
+END FUNCTION
+
+GRAMMAR AND TREE ACTIONS
+    expr = expr + term -> MAKE_NODE("+", left_tree, right_tree)
+         OR expr - term -> MAKE_NODE("-", left_tree, right_tree)
+         OR term        -> RETURN term's tree
+
+    term = term * factor -> MAKE_NODE("*", left_tree, right_tree)
+         OR term / factor -> MAKE_NODE("/", left_tree, right_tree)
+         OR factor        -> RETURN factor's tree
+
+    factor = ( expr ) -> RETURN inner expression tree
+           OR ID      -> MAKE_NODE(identifier_text, NULL, NULL)
+           OR NUM     -> MAKE_NODE(number_text, NULL, NULL)
+END GRAMMAR
+
+PROCEDURE PRINT_TREE(node, depth)
+    IF node = NULL
+        RETURN
+    END IF
+    CALL PRINT_TREE(node.right, depth + 1)
+    PRINT node.label indented by 4 * depth spaces
+    CALL PRINT_TREE(node.left, depth + 1)
+END PROCEDURE
+
+BEGIN
+    CALL Yacc parser using NEXT_TOKEN and the tree-building grammar
+    UNTIL EOF
+        IF an expression followed by newline is parsed successfully
+            CALL PRINT_TREE(expression_tree, 0)
+            PRINT "-----"
+        ELSE IF a syntax error occurs
+            PRINT "syntax error"
+            DISCARD input through the next newline
+            RESET parser error state AND CONTINUE
+        END IF
+    END UNTIL
+END
+
+NOTE: The grammar gives * and / higher precedence than + and -.
+Right children print above their parents; left children print below.
+Unary minus and decimal literals are not supported by this grammar.

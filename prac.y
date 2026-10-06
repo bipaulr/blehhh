@@ -1,24 +1,30 @@
 %{
-    #include<stdio.h>
-    #include<stdlib.h>
-    int yylex();
-    void yyerror(const char *s){
-        void(s);
-        prinft("Invalid Variable /n");
-    }
+#include <stdio.h>
+
+int yylex(void);
+
+void yyerror(const char *s)
+{
+    (void)s;
+    printf("Invalid Variable\n");
+}
 %}
 
 %token L D
 
 %%
-variable : L rest '\n'  {printf("Valid Variable \n"); YYACCEPT;}
+variable : L rest '\n'  { printf("Valid Variable\n"); YYACCEPT; }
+         ;
 rest : rest L
      | rest D 
-     | 
+     | /* empty */
      ;
 %%
 
-int main(){
-    return yyparse(); 
+int main(void)
+{
+    printf("Enter a variable name: ");
+    fflush(stdout);
+    return yyparse();
 }
 

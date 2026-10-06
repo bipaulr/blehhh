@@ -19,5 +19,7 @@ rest : rest L
      ;
 %%
 int main(void) {
+    printf("Enter a variable name: ");
+    fflush(stdout);
     return yyparse();
 }

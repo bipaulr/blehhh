@@ -1,6 +1,5 @@
 PLEASE DO 'history -c' after and then 'clear'
 
-
 CYCLE I - C PROGRAMS
 1. lex.c  / lexinput.txt  / lex.txt  - lexical analyzer
    lexsource.txt - actual source text read by the lexical analyzer
@@ -8,7 +7,6 @@ CYCLE I - C PROGRAMS
 3. enfa.c / enfainput.txt / enfa.txt - remove epsilon transitions from an NFA
 4. nfa.c  / nfainput.txt  / nfa.txt  - NFA to DFA subset construction
 5. dfa.c  / dfainput.txt  / dfa.txt  - DFA minimization by table filling
-   lexw.c - alternative lexical analyzer that reads terminal input
 
 CYCLE II - LEX AND YACC
 6. name.l         / nameinput.txt / name.txt - reject lines containing name
@@ -18,6 +16,19 @@ CYCLE II - LEX AND YACC
 10. for.l, for.y  / forinput.txt  / for.txt  - FOR-statement syntax check
 11. vc.l / vcinput.txt / vc.txt / vcps.txt - vowels and consonants
 12. while.l, while.y / whileinput.txt / while.txt / whileps.txt - WHILE syntax check
+13. arith.l, arith.y / arithinput.txt / arith.txt - arithmetic-expression syntax check
+
+  Arithmetic-expression validator:
+    gedit arith.l arith.y arithinput.txt arith.txt &
+    yacc -d arith.y
+    flex arith.l
+    gcc y.tab.c lex.yy.c -o arith
+    ./arith
+    Type one expression, for example a+b*c or (2+3)*4, and press Enter.
+    Run ./arith again for another case. Identifiers, numbers, + - * /,
+    unary signs and parentheses are supported. This checks syntax, not values.
+    Division by zero is syntactically valid here; assignment and comparisons
+    are unsupported. arithinput.txt is a reference, not redirected input.
 
 METHOD 1: C SOURCE -> GCC -> RUN
 

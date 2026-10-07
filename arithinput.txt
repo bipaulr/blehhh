@@ -1,0 +1,23 @@
+# Reference only: type ONE expression and press Enter, then rerun for another case.
+# Operands can be identifiers, integers or decimal numbers.
+# Operators: +, -, *, /. Unary + and - and parentheses are supported.
+# Valid: multiplication binds more tightly than addition.
+a+b*c
+# Valid: parentheses and numeric operands.
+(2+3)*4
+# Valid: unary minus.
+-x+2
+# Valid: decimal values, including a leading or trailing decimal point.
+.5+2.25+5.
+# Valid syntax: this program does not evaluate expressions or detect zero division.
+5/0
+# Invalid: an operator is missing between two operands.
+a b
+# Invalid: multiplication has no left operand after the plus sign.
+2+*3
+# Invalid: missing closing parenthesis.
+(a+b
+# Invalid: empty parentheses.
+()
+# Invalid: assignment is not an arithmetic expression in this grammar.
+x=2+3

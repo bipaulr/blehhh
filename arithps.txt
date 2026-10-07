@@ -1,0 +1,36 @@
+PSEUDOCODE: ARITHMETIC-EXPRESSION VALIDATION USING LEX AND YACC
+
+FUNCTION NEXT_TOKEN
+    IF next text is an identifier
+        RETURN ID
+    ELSE IF next text is an integer or decimal number
+        RETURN NUM
+    ELSE IF character is a space or tab
+        SKIP it AND CONTINUE scanning
+    ELSE
+        RETURN the character itself, or EOF at end of input
+    END IF
+END FUNCTION
+
+GRAMMAR
+    input = expr newline
+    expr = expr '+' term OR expr '-' term OR term
+    term = term '*' factor OR term '/' factor OR factor
+    factor = '+' factor OR '-' factor OR '(' expr ')' OR ID OR NUM
+END GRAMMAR
+
+BEGIN
+    PRINT "Enter an arithmetic expression: "
+    CALL Yacc parser using NEXT_TOKEN and the grammar
+
+    IF one complete expression followed by newline is parsed successfully
+        PRINT "Valid arithmetic expression"
+        ACCEPT immediately AND STOP successfully
+    ELSE
+        PRINT "Invalid arithmetic expression"
+        STOP with parsing failure
+    END IF
+END
+
+NOTE: Multiplication/division bind more tightly than addition/subtraction.
+Unary signs bind tightly; parentheses control grouping. No value is calculated.

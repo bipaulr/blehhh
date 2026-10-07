@@ -1,0 +1,17 @@
+YACC: VALID ARITHMETIC EXPRESSION
+
+ALGORITHM
+1. Print the input prompt and call the Yacc parser.
+2. Lex returns ID for identifiers and NUM for integers or decimal numbers.
+   Skip spaces and tabs. Return operators, parentheses and newline as characters.
+3. Parse an expression followed by newline.
+4. An expression is a term, or an expression plus/minus another term.
+5. A term is a factor, or a term multiplied/divided by another factor.
+6. A factor is an identifier, a number, an expression in parentheses, or a
+   factor preceded by unary + or -.
+7. If parsing succeeds, print Valid arithmetic expression and exit.
+8. On a syntax error, print Invalid arithmetic expression and exit with failure.
+
+Check one expression per run. This program checks syntax only; it does not
+calculate a result, check whether identifiers exist, or reject division by zero.
+Assignment, comparison, exponentiation, modulo and function calls are unsupported.

@@ -1,0 +1,10 @@
+FIRST AND FOLLOW OF A GRAMMAR
+
+ALGORITHM
+1.  Read the productions. Uppercase = non-terminal, # = epsilon. The first production's left side is the start symbol.
+2.  FIRST, repeat until nothing changes: for A -> X1 X2 ..., add FIRST(X1) minus epsilon. If X1 can vanish, also add
+ FIRST(X2), and so on. If all can vanish, add epsilon. A terminal X1 adds itself and stops.
+3.  FOLLOW(start) contains $.
+4.  FOLLOW, repeat until nothing changes: for A -> a B b, add FIRST(b) minus epsilon to FOLLOW(B).
+5.  If b is empty or can vanish, add all of FOLLOW(A) to FOLLOW(B).
+6.  Print FIRST and FOLLOW of every non-terminal. FOLLOW never contains epsilon.

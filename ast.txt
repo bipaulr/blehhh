@@ -7,3 +7,4 @@ ALGORITHM
 3.  Operator rule: $$ = make_node(op, $1, $3). Name or number: a leaf node with no children. Brackets: just
  pass $2 up.
 4.  print_tree visits right child, then the node, then left child, indenting 4 spaces per level.
+5.  preorder visits root, left, right. postorder visits left, right, root. Both are printed after the tree.

@@ -1,9 +1,10 @@
-# One non-empty string per line. Matching name ignores letter case.
-# After the prompt, expected: Accepted, Rejected, Rejected, Accepted, Rejected, Accepted.
+# One non-empty string per line. Matching Paul ignores letter case.
+# Replace Paul in name.l with the first four letters of your own name if it differs.
+# After the prompt, expected: ACCEPTED, NOT ACCEPTED, ACCEPTED, NOT ACCEPTED, NOT ACCEPTED, ACCEPTED.
 # Empty lines produce no output.
-hello
-NAMEina
-xnamex
-abc
-Name
-nam
+HELLO WORLD
+Paul Ranjith
+LEXICAL ANALYSIS
+Hi Paul 123
+xpaulx
+Pau

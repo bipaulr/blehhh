@@ -1,0 +1,11 @@
+# Type one string and press Enter. Use i for id and end the string with $.
+# Grammar: E -> E+E | E*E | id. * binds tighter than +; + is left associative.
+# Accepted: shows * reduced before +.
+i+i*i$
+# Accepted.
+i+i$
+# Rejected: the + has no right operand (No handle).
+i+$
+# Rejected: two operands side by side (no relation between i and i).
+ii$
+# Run ./opp once per string; these lines are a reference, not redirected input.

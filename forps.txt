@@ -22,7 +22,9 @@ FUNCTION NEXT_TOKEN
 END FUNCTION
 
 GRAMMAR
-    for_stmt = FOR '(' init ';' cond ';' update ')' body newline
+    start = forstmt newline
+
+    forstmt = FOR '(' init ';' cond ';' update ')' body
 
     init = ID '=' expr
          OR T ID '=' expr
@@ -32,6 +34,7 @@ GRAMMAR
          OR empty
 
     update = ID INC
+           OR INC ID
            OR ID '=' expr
            OR empty
 
@@ -39,14 +42,19 @@ GRAMMAR
          OR expr '-' expr
          OR expr '*' expr
          OR expr '/' expr
+         OR '(' expr ')'
          OR ID
          OR NUM
 
-    body = ';'
-         OR '{' stmts '}'
+    body = '{' stmts '}'
+         OR stmt
+         OR ';'
 
-    stmts = stmts ID '=' expr ';'
+    stmts = stmts stmt
           OR empty
+
+    stmt = ID '=' expr ';'
+         OR forstmt
 END GRAMMAR
 
 PRECEDENCE
@@ -56,7 +64,7 @@ END PRECEDENCE
 
 BEGIN
     CALL Yacc parser using NEXT_TOKEN and the grammar
-    IF one complete for_stmt is parsed successfully
+    IF one complete forstmt followed by newline is parsed successfully
         PRINT "Valid FOR statement"
         ACCEPT immediately AND STOP successfully
     ELSE
@@ -65,7 +73,8 @@ BEGIN
     END IF
 END
 
-NOTE: One statement is checked per run. The body is a semicolon or a block
-of assignments. The grammar does not support parenthesized arithmetic,
-unary minus, nested loops or general C statements. Keyword rules precede
-the identifier rule so keywords win when matched lengths are equal.
+NOTE: One statement is checked per run. The body is a block, one statement
+(an assignment or a nested for loop) or a lone semicolon. The grammar does not
+support unary minus, declarations other than int i = 0 in the init part, or
+general C statements such as x++;. Keyword rules precede the identifier rule
+so keywords win when matched lengths are equal.

@@ -1,0 +1,43 @@
+PSEUDOCODE: SHIFT REDUCE PARSER FOR E -> E+E | E*E | (E) | id
+
+FUNCTION REDUCE(lookahead)
+    IF top of stack = id
+        REPLACE it by E AND PRINT "REDUCE E->id" AND RETURN TRUE
+    ELSE IF top three symbols are ( E )
+        REPLACE them by E AND PRINT "REDUCE E->(E)" AND RETURN TRUE
+    ELSE IF top three symbols are E * E
+        REPLACE them by E AND PRINT "REDUCE E->E*E" AND RETURN TRUE
+    ELSE IF top three symbols are E + E AND lookahead is not *
+        REPLACE them by E AND PRINT "REDUCE E->E+E" AND RETURN TRUE
+    END IF
+    RETURN FALSE
+END FUNCTION
+
+BEGIN
+    READ the input string
+    CONVERT it into tokens: id, +, *, (, )
+    IF any other character appears
+        PRINT "String rejected" AND STOP
+    END IF
+
+    SET stack = empty, position = 0
+    LOOP
+        WHILE REDUCE(next token) is TRUE
+            CONTINUE
+        END WHILE
+        IF no input is left
+            STOP the loop
+        END IF
+        PUSH the next token ON stack AND ADVANCE position
+        PRINT "SHIFT"
+    END LOOP
+
+    IF stack = E
+        PRINT "String accepted"
+    ELSE
+        PRINT "String rejected"
+    END IF
+END
+
+NOTE: A shift-reduce conflict arises for E+E with * next. Not reducing in that case
+gives * higher precedence than +. Each step prints the stack, the input and the action.

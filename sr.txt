@@ -1,0 +1,8 @@
+SHIFT REDUCE PARSER
+
+ALGORITHM
+1.  Convert the input into tokens (id becomes one token). Any other symbol than + * ( ) is rejected.
+2.  Repeat reducing while the top of the stack is a handle: id, (E), E*E, or E+E (but E+E only if the next token is not *).
+3.  If input is left, SHIFT the next token onto the stack.
+4.  Print the stack, the remaining input and the action after every step.
+5.  When the input ends, accept only if the stack is exactly E.

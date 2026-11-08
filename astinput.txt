@@ -5,3 +5,6 @@ a+b*c
 # The second tree has * at its root and + as its left child.
 (a+b)*5
 # Trees print sideways: right child above, left child below, four spaces per level.
+# After each tree the preorder and postorder are printed.
+# a+b*c   -> Preorder: + a * b c    Postorder: a b c * +
+# (a+b)*5 -> Preorder: * + a b 5    Postorder: a b + 5 *

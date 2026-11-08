@@ -1,0 +1,49 @@
+PSEUDOCODE: INTERMEDIATE CODE GENERATION (THREE-ADDRESS CODE)
+
+FUNCTION PRIORITY(operator)
+    IF operator is * OR /  RETURN 2
+    IF operator is + OR -  RETURN 1
+    RETURN 0                                  -- the ( symbol
+END FUNCTION
+
+PROCEDURE GENERATE
+    POP operator FROM operator stack
+    POP b FROM operand stack                  -- right operand is on top
+    POP a FROM operand stack
+    SET t = next temporary name (t1, t2, ...)
+    PRINT t "=" a operator b
+    PUSH t ON operand stack
+END PROCEDURE
+
+BEGIN
+    READ an assignment  name = expression
+    VALIDATE that it has a name, an = sign and an expression
+
+    FOR each item of the expression from left to right
+        IF item is a name or number
+            PUSH it ON operand stack
+        ELSE IF item is '('
+            PUSH it ON operator stack
+        ELSE IF item is ')'
+            WHILE top of operator stack is not '('
+                CALL GENERATE
+            END WHILE
+            POP the '(' AND DISCARD it
+        ELSE IF item is + - * /
+            WHILE operator stack is not empty AND PRIORITY(top) >= PRIORITY(item)
+                CALL GENERATE
+            END WHILE
+            PUSH item ON operator stack
+        ELSE
+            PRINT "Invalid expression" AND STOP
+        END IF
+    END FOR
+
+    WHILE operator stack is not empty
+        CALL GENERATE
+    END WHILE
+    PRINT name "=" top of operand stack
+END
+
+NOTE: ">=" instead of ">" makes a-b-c group as (a-b)-c, left to right. Missing operands,
+unbalanced brackets and unknown characters stop the program with a message.

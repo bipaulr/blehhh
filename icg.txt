@@ -1,0 +1,11 @@
+INTERMEDIATE CODE GENERATION (THREE-ADDRESS CODE)
+
+ALGORITHM
+1.  Read an assignment such as x=a+b*c. Split it at =.
+2.  Scan the right side left to right.
+3.  Operand: push it on the operand stack.
+4.  ( : push on the operator stack. ) : generate code until the ( is on top, then drop it.
+5.  Operator: while the top operator has priority >= this one, generate code. Then push this operator.
+6.  generate(): pop one operator and two operands, print t_k = a op b, push t_k.
+7.  At the end generate the rest, then print x = last temporary.
+8.  Report missing operands, unbalanced brackets and unknown characters instead of producing wrong code.

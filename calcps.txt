@@ -22,7 +22,7 @@ EXPRESSION ACTIONS
     expr - expr -> RETURN left_value - right_value
     expr * expr -> RETURN left_value * right_value
     expr / expr -> IF right_value = 0
-                       PRINT "division by zero"
+                       PRINT "Error: Division by zero"
                        SIGNAL parse error for this line
                    ELSE
                        RETURN left_value / right_value
@@ -36,9 +36,9 @@ BEGIN
     CALL Yacc parser using NEXT_TOKEN, precedence and expression actions
     UNTIL EOF
         IF an expression followed by newline is parsed successfully
-            PRINT "=", expression_value
+            PRINT "Result =", expression_value
         ELSE IF a syntax error occurs
-            PRINT "error"
+            PRINT "Invalid Expression"
             DISCARD input through the next newline
             RESET parser error state AND CONTINUE
         ELSE IF division by zero was signalled

@@ -1,0 +1,11 @@
+# Type one string and press Enter. Write id for an identifier; no spaces.
+# Grammar: E -> E+E | E*E | (E) | id. * binds tighter than +.
+# Accepted: E+E is not reduced while * is the next input, so id*id is reduced first.
+id+id*id
+# Accepted: brackets reduce first.
+(id+id)*id
+# Rejected: the input ends after + and the stack is not just E.
+id+
+# Rejected: two operands side by side leave E E on the stack.
+idid
+# Run ./sr once per string; these lines are a reference, not redirected input.

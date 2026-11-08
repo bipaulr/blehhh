@@ -40,13 +40,16 @@ BEGIN
                 PUT_BACK ch INTO source
             END IF
             IF word is in keywords
-                PRINT "KEYWORD", word
+                PRINT word, "Keyword"
             ELSE
-                PRINT "IDENTIFIER", word
+                PRINT word, "Identifier"
             END IF
         ELSE IF ch is a digit
-            SET word = empty string
-            WHILE ch is a digit AND length(word) < 63
+            SET word = empty string, has_dot = FALSE
+            WHILE (ch is a digit OR (ch is '.' AND NOT has_dot)) AND length(word) < 63
+                IF ch is '.'
+                    SET has_dot = TRUE
+                END IF
                 APPEND ch TO word
                 SET ch = READ_CHARACTER(source)
             END WHILE
@@ -58,9 +61,33 @@ BEGIN
             IF ch is not EOF
                 PUT_BACK ch INTO source
             END IF
-            PRINT "NUMBER", word
+            PRINT word, "Number"
+        ELSE IF ch is a double quote
+            SET word = ch
+            WHILE READ_CHARACTER(source) gives ch other than a double quote or EOF
+                APPEND ch TO word
+            END WHILE
+            IF the closing double quote was not found
+                PRINT "Unterminated or too long string literal"
+                CLOSE source
+                STOP with failure
+            END IF
+            APPEND the closing double quote TO word
+            PRINT word, "String"
+        ELSE IF ch is one of + - * / % = < > !
+            SET next = READ_CHARACTER(source)
+            IF ch is one of < > = ! AND next is '='
+                PRINT ch followed by '=', "Operator"
+            ELSE
+                IF next is not EOF
+                    PUT_BACK next INTO source
+                END IF
+                PRINT ch, "Operator"
+            END IF
+        ELSE IF ch is one of ; , ( ) { }
+            PRINT ch, "Delimiter"
         ELSE
-            PRINT "SYMBOL", ch
+            PRINT ch, "Unknown"
         END IF
     END WHILE
 

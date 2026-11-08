@@ -11,10 +11,13 @@ void yyerror(const char *msg) {
 %left '+' '-'
 %left '*' '/'
 %%
-/* for ( init ; condition ; update ) body    then end of line */
-for_stmt : FOR '(' init ';' cond ';' update ')' body '\n'
+/* one complete for statement, then end of line */
+start  : forstmt '\n'
                 { printf("Valid FOR statement\n"); YYACCEPT; }
-         ;
+       ;
+/* for ( init ; condition ; update ) body    -- each of the three parts may be empty */
+forstmt : FOR '(' init ';' cond ';' update ')' body
+        ;
 /* init part:  i = 0   or   int i = 0   or empty */
 init   : ID '=' expr
        | T ID '=' expr
@@ -24,28 +27,37 @@ init   : ID '=' expr
 cond   : expr REL expr
        | /* empty */
        ;
-/* update part:  i++   or   i = i + 1   or empty */
+/* update part:  i++  ++i  i--  --i  i = i + 1   or empty */
 update : ID INC
+       | INC ID
        | ID '=' expr
        | /* empty */
        ;
-/* a simple arithmetic expression: names, numbers and + - * / */
+/* a simple arithmetic expression: names, numbers, + - * / and brackets */
 expr   : expr '+' expr
        | expr '-' expr
        | expr '*' expr
        | expr '/' expr
+       | '(' expr ')'
        | ID
        | NUM
        ;
-/* body:  a lone ;   or a block { x = 1; y = 2; } */
-body   : ';'
-       | '{' stmts '}'
+/* body:  { statements }   or one statement   or just ; */
+body   : '{' stmts '}'
+       | stmt
+       | ';'
        ;
-/* zero or more assignment statements inside a block */
-stmts  : stmts ID '=' expr ';'
+/* zero or more statements inside a block */
+stmts  : stmts stmt
        | /* empty */
+       ;
+/* a statement: an assignment, or another for loop inside this one */
+stmt   : ID '=' expr ';'
+       | forstmt
        ;
 %%
 int main(void) {
+    printf("Enter a FOR statement: ");
+    fflush(stdout);
     return yyparse();
 }

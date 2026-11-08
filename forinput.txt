@@ -1,4 +1,4 @@
-# One FOR statement per line. run.ps1 starts a fresh parser for each case.
+# One FOR statement per line. Run ./for once for each case.
 # Only the restricted grammar from the PDF is supported; this is not a full C parser.
 # Valid: assignment initialization, comparison, postfix increment, semicolon body.
 for(i=0;i<10;i++);
@@ -6,6 +6,10 @@ for(i=0;i<10;i++);
 for(int i=0;i<n;i=i+1){x=x+i;}
 # Valid: empty initialization, condition and update.
 for(;;);
+# Valid: prefix increment, a single statement as the body, and a nested loop.
+for(i=0;i<n;++i) for(j=0;j<n;j--) { x=1; y=2; }
+# Valid: a single assignment as the body, without braces.
+for(i=0;i<10;i++) x=x+1;
 # Invalid: missing semicolon between the condition and update.
 for(i=0;i<10 i++);
 # Invalid: missing body after the closing parenthesis.

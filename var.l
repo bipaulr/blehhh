@@ -3,8 +3,8 @@
 #include "y.tab.h"
 %}
 %%
-  /* a letter */
-[a-zA-Z]    { return L; }
+  /* a letter or underscore */
+[a-zA-Z_]   { return L; }
   /* a digit */
 [0-9]       { return D; }
   /* anything else (newline, _, -, space ...) is handed to yacc as itself;

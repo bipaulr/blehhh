@@ -1,0 +1,61 @@
+PSEUDOCODE: FIRST AND FOLLOW
+
+BEGIN
+    READ n AND n productions of the form A=xyz
+    VALIDATE 1 <= n <= 20 AND each production has an uppercase left side and a right side
+    INITIALIZE every FIRST and FOLLOW set to empty
+
+    REPEAT                                    -- FIRST
+        SET changed = FALSE
+        FOR each production A = X1 X2 ... Xk
+            IF right side is #
+                ADD epsilon TO FIRST(A)
+            ELSE
+                SET all_vanish = TRUE
+                FOR each Xi from left to right
+                    IF Xi is a terminal
+                        ADD Xi TO FIRST(A)
+                        SET all_vanish = FALSE AND STOP this loop
+                    END IF
+                    ADD FIRST(Xi) minus epsilon TO FIRST(A)
+                    IF epsilon is not in FIRST(Xi)
+                        SET all_vanish = FALSE AND STOP this loop
+                    END IF
+                END FOR
+                IF all_vanish
+                    ADD epsilon TO FIRST(A)
+                END IF
+            END IF
+            IF any set grew, SET changed = TRUE
+        END FOR
+    UNTIL changed = FALSE
+
+    ADD $ TO FOLLOW(start symbol)
+    REPEAT                                    -- FOLLOW
+        SET changed = FALSE
+        FOR each production A = X1 ... Xk
+            FOR each non-terminal B = Xi
+                SET rest_vanish = TRUE
+                FOR each Y = Xi+1 ... Xk from left to right
+                    IF Y is a terminal
+                        ADD Y TO FOLLOW(B)
+                        SET rest_vanish = FALSE AND STOP this loop
+                    END IF
+                    ADD FIRST(Y) minus epsilon TO FOLLOW(B)
+                    IF epsilon is not in FIRST(Y)
+                        SET rest_vanish = FALSE AND STOP this loop
+                    END IF
+                END FOR
+                IF rest_vanish
+                    ADD FOLLOW(A) TO FOLLOW(B)
+                END IF
+            END FOR
+            IF any set grew, SET changed = TRUE
+        END FOR
+    UNTIL changed = FALSE
+
+    PRINT FIRST of each non-terminal, then FOLLOW of each non-terminal
+END
+
+NOTE: Sets depend on each other, so one pass is not enough: the loops run until a fixed point.
+Only single-letter symbols are supported.

@@ -9,7 +9,7 @@ CYCLE I - C PROGRAMS
 5. dfa.c  / dfainput.txt  / dfa.txt  - DFA minimization by table filling
 
 CYCLE II - LEX AND YACC
-6. name.l         / nameinput.txt / name.txt - reject lines containing name
+6. name.l         / nameinput.txt / name.txt - reject lines containing Paul (first 4 letters of the name)
 7. var.l, var.y   / varinput.txt  / var.txt  - variable-name validation
 8. calc.l, calc.y / calcinput.txt / calc.txt - calculator
 9. ast.l, ast.y   / astinput.txt  / ast.txt  - BNF grammar and syntax tree
@@ -30,106 +30,11 @@ CYCLE II - LEX AND YACC
     Division by zero is syntactically valid here; assignment and comparisons
     are unsupported. arithinput.txt is a reference, not redirected input.
 
-METHOD 1: C SOURCE -> GCC -> RUN
+CYCLE III - PARSERS AND CODE GENERATION (all plain C, METHOD 1)
+14. opp.c    / oppinput.txt    / opp.txt    / oppps.txt    - operator precedence parser
+15. ff.c     / ffinput.txt     / ff.txt     / ffps.txt     - FIRST and FOLLOW sets
+16. rd.c     / rdinput.txt     / rd.txt     / rdps.txt     - recursive descent parser
+17. sr.c     / srinput.txt     / sr.txt     / srps.txt     - shift reduce parser
+18. icg.c    / icginput.txt    / icg.txt    / icgps.txt    - three-address code generation
+19. asm86.c  / asm86input.txt  / asm86.txt  / asm86ps.txt  - three-address code to 8086 assembly
 
-  Lexical analyzer:
-    gedit lex.c lexsource.txt lexinput.txt lex.txt &
-    gcc lex.c -o lex
-    ./lex lexsource.txt
-    Or run ./lex and type lexsource.txt at the filename prompt.
-    Edit lexsource.txt to change the source program being analyzed.
-
-  Lexical analyzer from terminal input:
-    gedit lexw.c &
-    gcc lexw.c -o lexw
-    ./lexw
-    Type C-like source text; finish with Ctrl+D on an empty line.
-
-  Epsilon closure:
-    gedit ec.c ecinput.txt ec.txt &
-    gcc ec.c -o ec
-    ./ec
-
-  Remove epsilon transitions:
-    gedit enfa.c enfainput.txt enfa.txt &
-    gcc enfa.c -o enfa
-    ./enfa
-
-  NFA to DFA:
-    gedit nfa.c nfainput.txt nfa.txt &
-    gcc nfa.c -o nfa
-    ./nfa
-
-  DFA minimization:
-    gedit dfa.c dfainput.txt dfa.txt &
-    gcc dfa.c -o dfa
-    ./dfa
-
-METHOD 2: LEX SOURCE -> FLEX -> GCC -> RUN
-Applies to name.l and vc.l. These programs do not need yacc.
-
-  Strings without the substring name:
-    gedit name.l nameinput.txt name.txt &
-    flex name.l
-    gcc lex.yy.c -o name
-    ./name
-
-  Vowels and consonants:
-    gedit vc.l vcinput.txt vc.txt &
-    flex vc.l
-    gcc lex.yy.c -o vc
-    ./vc
-
-METHOD 3: YACC + LEX -> YACC + FLEX -> GCC -> RUN
-Applies to these pairs:
-  var.y  + var.l  - variable-name validator
-  calc.y + calc.l - calculator
-  ast.y  + ast.l  - abstract syntax tree
-  for.y  + for.l  - FOR-statement validator
-  while.y + while.l - WHILE-statement validator
-  prac.y + prac.l - practice variable-name validator
-
-The .y file contains grammar rules; the .l file contains token patterns.
-yacc -d generates y.tab.c and y.tab.h, which these lexers expect.
-Flex generates lex.yy.c. Compile y.tab.c and lex.yy.c together.
-Build one pair at a time: generated files are overwritten by the next build.
-
-  Variable-name validator:  
-    yacc -d var.y
-    flex var.l
-    gcc y.tab.c lex.yy.c -o var
-    ./var
-
-  Calculator:
-    yacc -d calc.y
-    flex calc.l
-    gcc y.tab.c lex.yy.c -o calc
-    ./calc
-
-  Abstract syntax tree:
-    yacc -d ast.y
-    flex ast.l
-    gcc y.tab.c lex.yy.c -o ast
-    ./ast
-
-  FOR-statement validator:
-    yacc -d for.y
-    flex for.l
-    gcc y.tab.c lex.yy.c -o for
-    ./for
-
-  WHILE-statement validator:
-    yacc -d while.y
-    flex while.l
-    gcc y.tab.c lex.yy.c -o while
-    ./while
-
-  Practice variable-name validator:
-    yacc -d prac.y
-    flex prac.l
-    gcc y.tab.c lex.yy.c -o prac
-    ./prac
-
-
-
-========================================

@@ -9,5 +9,5 @@
 10/4
 # Reports division by zero, then continues with the next line.
 5/0
-# Invalid syntax reports error.
+# Invalid syntax reports Invalid Expression.
 2+*3

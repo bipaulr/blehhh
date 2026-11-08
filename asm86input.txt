@@ -1,0 +1,12 @@
+# Type three-address code, one line per statement; spaces around = and the operator are optional.
+# Finish with the word exit on its own line.
+t1=b*c
+t2=a+t1
+x=t2
+y=p/q
+exit
+# Expected output for t1=b*c:  MOV AX, b / MUL c / MOV t1, AX
+# Expected output for y=p/q:   MOV AX, p / MOV DX, 0 / DIV q / MOV y, AX
+# Expected output for x=t2:    MOV AX, t2 / MOV x, AX
+# A number as second operand of * or / is first copied into BX, because MUL and DIV cannot take a constant.
+# Run ./asm86 and type the lines; this file is a reference, not redirected input.

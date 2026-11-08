@@ -1,0 +1,77 @@
+PSEUDOCODE: RECURSIVE DESCENT PARSER
+
+GRAMMAR (left recursion removed)
+    E  = T E'
+    E' = + T E'  OR  epsilon
+    T  = F T'
+    T' = * F T'  OR  epsilon
+    F  = ( E )   OR  i
+END GRAMMAR
+
+PROCEDURE MATCH(c)
+    IF next input character = c
+        ADVANCE the input
+    ELSE
+        PRINT "Syntax Error" AND STOP
+    END IF
+END PROCEDURE
+
+PROCEDURE E
+    PRINT "E -> T E'"
+    CALL T
+    CALL E_PRIME
+END PROCEDURE
+
+PROCEDURE E_PRIME
+    IF next character = '+'
+        PRINT "E' -> + T E'"
+        CALL MATCH('+')
+        CALL T
+        CALL E_PRIME
+    ELSE
+        PRINT "E' -> e"
+    END IF
+END PROCEDURE
+
+PROCEDURE T
+    PRINT "T -> F T'"
+    CALL F
+    CALL T_PRIME
+END PROCEDURE
+
+PROCEDURE T_PRIME
+    IF next character = '*'
+        PRINT "T' -> * F T'"
+        CALL MATCH('*')
+        CALL F
+        CALL T_PRIME
+    ELSE
+        PRINT "T' -> e"
+    END IF
+END PROCEDURE
+
+PROCEDURE F
+    IF next character = 'i'
+        PRINT "F -> i"
+        ADVANCE the input
+    ELSE IF next character = '('
+        PRINT "F -> ( E )"
+        CALL MATCH('(')
+        CALL E
+        CALL MATCH(')')
+    ELSE
+        PRINT "Syntax Error" AND STOP
+    END IF
+END PROCEDURE
+
+BEGIN
+    READ the expression
+    CALL E
+    IF all input has been consumed
+        PRINT "String Accepted"
+    ELSE
+        PRINT "Syntax Error"
+    END IF
+END
+
+NOTE: A function for E = E + T would call itself forever, which is why left recursion is removed.

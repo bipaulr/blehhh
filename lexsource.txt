@@ -1,3 +1,9 @@
-int  main() {
-    int x1 =    42;  while(x1>0) x1--;
+int main() {
+    int a = 10, b = 20;
+    float sum = a + b;
+
+    if (sum >= 30.0) {
+        printf("High");
+    }
+    return 0;
 }

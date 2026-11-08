@@ -5,8 +5,8 @@
 %option caseless
 
 %%
-.*name.*    { printf("Rejected\n"); }
-.+          { printf("Accepted\n"); }
+.*paul.*    { printf("NOT ACCEPTED (Contains Paul)\n"); }
+.+          { printf("ACCEPTED (Does not contain Paul)\n"); }
 \n          ;
 %%
 

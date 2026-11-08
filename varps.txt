@@ -2,7 +2,7 @@ PSEUDOCODE: VARIABLE-NAME VALIDATION USING LEX AND YACC
 
 FUNCTION NEXT_TOKEN
     READ one character
-    IF character is a letter
+    IF character is a letter OR an underscore
         RETURN L
     ELSE IF character is a digit
         RETURN D
@@ -21,13 +21,13 @@ BEGIN
 
     IF tokens match one letter followed by zero or more letters/digits,
        ending with newline
-        PRINT "Valid variable"
+        PRINT "Valid Variable"
         ACCEPT immediately AND STOP successfully
     ELSE
-        PRINT "Invalid variable"
+        PRINT "Invalid Variable"
         STOP with parsing failure
     END IF
 END
 
-NOTE: One case is checked per run. Spaces, underscores and punctuation are
-invalid. This exercise checks the given grammar, not all C identifier rules.
+NOTE: One case is checked per run. Spaces, hyphens and other punctuation are
+invalid. An underscore counts as a letter, as in C.

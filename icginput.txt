@@ -1,0 +1,10 @@
+# Type one assignment without spaces and press Enter: name=expression.
+# Operands are names or numbers; operators are + - * / and brackets.
+# Expected: t1 = b * c / t2 = a + t1 / x = t2
+x=a+b*c
+# Expected: t1 = a + b / t2 = t1 * c / x = t2
+x=(a+b)*c
+# Equal priority groups left to right: t1 = a - b / t2 = t1 - c / x = t2
+x=a-b-c
+# Malformed input is reported, for example: x=a+  or  x=(a  or  x=a)
+# Run ./icg once per assignment; these lines are a reference, not redirected input.

@@ -1,0 +1,42 @@
+PSEUDOCODE: THREE-ADDRESS CODE TO 8086 ASSEMBLY
+
+BEGIN
+    PRINT prompt
+    WHILE a line can be read
+        IF line starts with "exit"
+            STOP
+        END IF
+        SPLIT line into  result = operand1 operator operand2   (spaces optional)
+
+        IF line is a plain copy  result = operand1
+            PRINT "MOV AX," operand1
+            PRINT "MOV" result ", AX"
+        ELSE IF line has all four parts
+            PRINT "MOV AX," operand1
+            IF operator is +
+                PRINT "ADD AX," operand2
+            ELSE IF operator is -
+                PRINT "SUB AX," operand2
+            ELSE IF operator is *
+                IF operand2 is a number
+                    PRINT "MOV BX," operand2 AND SET operand2 = BX
+                END IF
+                PRINT "MUL" operand2                 -- AX = AX * operand2
+            ELSE IF operator is /
+                IF operand2 is a number
+                    PRINT "MOV BX," operand2 AND SET operand2 = BX
+                END IF
+                PRINT "MOV DX, 0"                    -- DIV divides the pair DX:AX
+                PRINT "DIV" operand2                 -- AX = AX / operand2
+            ELSE
+                PRINT "; unknown operator"
+            END IF
+            PRINT "MOV" result ", AX"
+        ELSE IF line is not blank
+            PRINT "; invalid three-address code"
+        END IF
+    END WHILE
+END
+
+NOTE: 8086 MUL and DIV take ONE operand and work on AX (DIV also uses DX), so they are
+handled separately from ADD and SUB. Registers R0, R1 do not exist on the 8086.

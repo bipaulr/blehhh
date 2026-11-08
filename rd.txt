@@ -1,0 +1,9 @@
+RECURSIVE DESCENT PARSER
+
+ALGORITHM
+1.  Use the grammar E -> T E', E' -> + T E' | e, T -> F T', T' -> * F T' | e, F -> ( E ) | i.
+2.  match(c): if the next character is c, consume it, else report a syntax error.
+3.  E() calls T() then E'(). T() calls F() then T'().
+4.  E'() and T'(): if the next character is + (or *), use the long production. Otherwise use epsilon.
+5.  F(): if i, consume it. If (, match (, call E(), match ). Otherwise error.
+6.  Print each production as it is used. Call E(). If the whole input is consumed the string is accepted.

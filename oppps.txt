@@ -1,0 +1,51 @@
+PSEUDOCODE: OPERATOR PRECEDENCE PARSER FOR E -> E+E | E*E | id
+
+TABLE rel[stack terminal][input terminal], terminals in the order i + * $
+          i   +   *   $
+    i     e   >   >   >
+    +     <   >   <   >
+    *     <   >   >   >
+    $     <   <   <   =
+END TABLE
+
+BEGIN
+    READ input string ending with $
+    SET stack = "$"
+
+    LOOP
+        SET a = nearest terminal on the stack, skipping any E
+        SET b = next input symbol
+        IF b is not one of i + * $
+            PRINT "Invalid symbol: rejected" AND STOP
+        END IF
+        IF a = $ AND b = $
+            IF stack = "$E"
+                PRINT "String is accepted"
+            ELSE
+                PRINT "String is not accepted"
+            END IF
+            STOP
+        END IF
+
+        IF rel[a][b] = '<'
+            PUSH b ON stack AND ADVANCE the input
+            PRINT "Shift", b
+        ELSE IF rel[a][b] = '>'
+            IF top of stack = i
+                REPLACE it by E
+                PRINT "Reduce E -> i"
+            ELSE IF top three symbols are E + E OR E * E
+                REPLACE them by E
+                PRINT "Reduce E -> E+E" OR "Reduce E -> E*E"
+            ELSE
+                PRINT "No handle: string is not accepted" AND STOP
+            END IF
+        ELSE
+            PRINT "Error: string is not accepted" AND STOP
+        END IF
+        PRINT stack, remaining input
+    END LOOP
+END
+
+NOTE: The string must end with $. Checking that the top really is a handle is what
+rejects strings such as i+$ that a table alone would let through.

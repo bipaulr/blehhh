@@ -45,11 +45,31 @@ PROCEDURE PRINT_TREE(node, depth)
     CALL PRINT_TREE(node.left, depth + 1)
 END PROCEDURE
 
+PROCEDURE PREORDER(node)
+    IF node = NULL
+        RETURN
+    END IF
+    PRINT node.label
+    CALL PREORDER(node.left)
+    CALL PREORDER(node.right)
+END PROCEDURE
+
+PROCEDURE POSTORDER(node)
+    IF node = NULL
+        RETURN
+    END IF
+    CALL POSTORDER(node.left)
+    CALL POSTORDER(node.right)
+    PRINT node.label
+END PROCEDURE
+
 BEGIN
     CALL Yacc parser using NEXT_TOKEN and the tree-building grammar
     UNTIL EOF
         IF an expression followed by newline is parsed successfully
             CALL PRINT_TREE(expression_tree, 0)
+            PRINT "Preorder  :" AND CALL PREORDER(expression_tree)
+            PRINT "Postorder :" AND CALL POSTORDER(expression_tree)
             PRINT "-----"
         ELSE IF a syntax error occurs
             PRINT "syntax error"

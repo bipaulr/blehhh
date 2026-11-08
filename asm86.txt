@@ -1,0 +1,12 @@
+THREE-ADDRESS CODE TO 8086 ASSEMBLY
+
+ALGORITHM
+1.  Read three-address lines until the word exit.
+2.  Split each line into result, operand 1, operator, operand 2.
+3.  Plain copy x=t2: MOV AX, t2 then MOV x, AX.
+4.  Emit MOV AX, operand1.
+5.  + gives ADD AX, operand2. - gives SUB AX, operand2.
+6.  * gives MUL operand2 (AX = AX * operand2).
+7.  / gives MOV DX, 0 then DIV operand2 (AX = AX / operand2).
+8.  If operand2 is a number for * or /, first emit MOV BX, number and use BX, because MUL and DIV take no constant.
+9.  Emit MOV result, AX.

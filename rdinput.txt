@@ -1,0 +1,12 @@
+# Type one expression without spaces and press Enter. Use i for id.
+# Grammar (left recursion removed, e = epsilon):
+#   E -> T E'    E' -> + T E' | e    T -> F T'    T' -> * F T' | e    F -> ( E ) | i
+# Accepted: prints the sequence of production rules used.
+i+i*i
+# Accepted.
+(i+i)*i
+# Syntax Error: * is not followed by an operand.
+i+*
+# Syntax Error: leftover ) after a complete expression.
+i+i)
+# Run ./rd once per string; these lines are a reference, not redirected input.

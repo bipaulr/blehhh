@@ -27,6 +27,23 @@ void print_tree(Node *p, int depth) {
     printf("%*s%s\n", depth * 4, "", p->label);
     print_tree(p->left, depth + 1);
 }
+/* Preorder: root, left, right.   Postorder: left, right, root. */
+void preorder(Node *p) {
+    if (p == NULL) {
+        return;
+    }
+    printf("%s ", p->label);
+    preorder(p->left);
+    preorder(p->right);
+}
+void postorder(Node *p) {
+    if (p == NULL) {
+        return;
+    }
+    postorder(p->left);
+    postorder(p->right);
+    printf("%s ", p->label);
+}
 int yylex(void);
 void yyerror(const char *msg) {
     (void)msg;
@@ -42,7 +59,10 @@ void yyerror(const char *msg) {
 %type <node> expr term factor
 %%
 /* The input is a list of lines, each holding one expression. */
-lines : lines expr '\n'     { print_tree($2, 0); printf("-----\n"); }
+lines : lines expr '\n'     { print_tree($2, 0);
+                              printf("Preorder  : "); preorder($2); printf("\n");
+                              printf("Postorder : "); postorder($2); printf("\n");
+                              printf("-----\n"); }
       | lines error '\n'    { yyerrok; }
       | /* empty */
       ;

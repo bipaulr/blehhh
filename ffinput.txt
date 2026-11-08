@@ -1,0 +1,15 @@
+# First line: number of productions (maximum 20).
+# Then one production per line in the form A=xyz: an uppercase letter is a non-terminal,
+# the # character means epsilon, and the left side of the first production is the start symbol.
+8
+E=TR
+R=+TR
+R=#
+T=FY
+Y=*FY
+Y=#
+F=(E)
+F=i
+# Expected: FIRST(E) = { (, i }  FIRST(R) = { epsilon, + }  FIRST(Y) = { epsilon, * }
+#           FOLLOW(E) = { $, ) }  FOLLOW(T) = { $, ), + }  FOLLOW(F) = { $, ), *, + }
+# A second case (3 productions): S=AB  A=a  B=b  gives FOLLOW(A) = { b }, FOLLOW(B) = { $ }.

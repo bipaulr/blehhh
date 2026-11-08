@@ -1,10 +1,13 @@
-# Each line is an independent test; run.ps1 launches a fresh parser for each.
-# A name must begin with a letter, followed only by letters or digits.
-# Underscores and spaces are invalid in this exercise, even though C permits underscores.
+# Each line is an independent test; run ./var once for each line.
+# A name must begin with a letter or underscore, followed only by letters, digits or underscores.
 abc1
-# Starts with a digit: Invalid variable.
+# Starts with a digit: Invalid Variable.
 9abc
-# Contains a hyphen: Invalid variable.
+# Contains a hyphen: Invalid Variable.
 ab-c
 # A single letter is valid.
 a
+# Starts with an underscore: Valid Variable.
+_temp
+# Contains a dollar sign: Invalid Variable.
+sum$

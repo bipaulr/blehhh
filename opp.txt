@@ -1,0 +1,10 @@
+OPERATOR PRECEDENCE PARSER
+
+ALGORITHM
+1.  Fix the relation table for the terminals i + * $. Put $ on the stack.
+2.  Find a = the nearest terminal on the stack and b = the next input symbol.
+3.  If a and b are both $: accept when the stack is $E, otherwise reject.
+4.  If rel[a][b] is '<': shift b onto the stack and advance the input.
+5.  If rel[a][b] is '>': reduce. i becomes E. E+E or E*E becomes E. Any other top is not a handle, so reject.
+6.  Any other table entry (error) or an unknown character: reject.
+7.  Print the stack, the remaining input and the action at every step.

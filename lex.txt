@@ -6,7 +6,10 @@ ALGORITHM
 3.  Read characters from the file one by one until EOF.
 4.  If the character is a space, tab or newline, skip it.
 5.  If it is a letter or underscore, keep reading letters, digits and underscores into a word. Compare the word
- with the keyword list and print KEYWORD or IDENTIFIER.
-6.  If it is a digit, keep reading digits and print NUMBER.
-7.  Anything else is printed as a SYMBOL. Report tokens longer than 63 characters.
-8.  Check for a read error, close the source file and stop.
+ with the keyword list and print Keyword or Identifier.
+6.  If it is a digit, keep reading digits (allow one decimal point) and print Number.
+7.  If it is a double quote, read up to the closing quote and print the whole thing as one String.
+8.  If it is one of + - * / % = < > !, read the next character too. If the pair is >=, <=, == or !=, print it as
+ one Operator. Otherwise push the second character back and print the single Operator.
+9.  If it is one of ; , ( ) { }, print Delimiter. Any other character is printed as Unknown.
+10. Report tokens longer than 63 characters, check for a read error, close the source file and stop.

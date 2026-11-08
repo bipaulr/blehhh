@@ -4,7 +4,7 @@
 int yylex(void);
 void yyerror(const char *msg) {
     (void)msg;
-    printf("error\n");
+    printf("Invalid Expression\n");
 }
 %}
 %token N                /* a number */
@@ -14,7 +14,7 @@ void yyerror(const char *msg) {
 %right UMINUS           /* unary minus, as in -5 */
 %%
 /* The input is a list of lines, each holding one expression. */
-input : input expr '\n'     { printf("= %g\n", $2); }   /* print the result */
+input : input expr '\n'     { printf("Result = %g\n", $2); }   /* print the result */
       | input error '\n'    { yyerrok; }                /* bad line: skip it and carry on */
       | /* empty */
       ;
@@ -23,7 +23,7 @@ expr  : expr '+' expr       { $$ = $1 + $3; }
       | expr '-' expr       { $$ = $1 - $3; }
       | expr '*' expr       { $$ = $1 * $3; }
       | expr '/' expr       { if ($3 == 0) {
-                                  printf("division by zero\n");
+                                  printf("Error: Division by zero\n");
                                   YYERROR;
                               }
                               $$ = $1 / $3; }

@@ -5,5 +5,6 @@ ALGORITHM
  themselves.
 2.  Yacc precedence lines: * and / bind tighter than + and -. Unary minus binds tightest.
 3.  Rule expr = expr + expr sets $$ = $1 + $3. The other operators work the same way. Brackets set $$ = $2.
-4.  Division by zero prints a message. The rule input = input error newline skips a bad line and carries on.
-5.  Each line is evaluated and printed as = value.
+4.  Division by zero prints "Error: Division by zero". A bad line prints "Invalid Expression". The rule
+ input = input error newline skips a bad line and carries on.
+5.  Each line is evaluated and printed as Result = value.

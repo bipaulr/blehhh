@@ -8,18 +8,18 @@ CYCLE I - C PROGRAMS
 4. nfa.c  / nfainput.txt  / nfa.txt  - NFA to DFA subset construction
 5. dfa.c  / dfainput.txt  / dfa.txt  - DFA minimization by table filling
 
-CYCLE II - LEX AND YACC
-6. name.l         / nameinput.txt / name.txt - reject lines containing Paul (first 4 letters of the name)
-7. var.l, var.y   / varinput.txt  / var.txt  - variable-name validation
-8. calc.l, calc.y / calcinput.txt / calc.txt - calculator
-9. ast.l, ast.y   / astinput.txt  / ast.txt  - BNF grammar and syntax tree
-10. for.l, for.y  / forinput.txt  / for.txt  - FOR-statement syntax check
-11. vc.l / vcinput.txt / vc.txt / vcps.txt - vowels and consonants
-12. while.l, while.y / whileinput.txt / while.txt / whileps.txt - WHILE syntax check
-13. arith.l, arith.y / arithinput.txt / arith.txt - arithmetic-expression syntax check
+CYCLE II - LEX AND YACC (code and sample input only)
+6. name.l         / nameinput.txt  - reject lines containing Paul (first 4 letters of the name)
+7. var.l, var.y   / varinput.txt   - variable-name validation
+8. calc.l, calc.y / calcinput.txt  - calculator
+9. ast.l, ast.y   / astinput.txt   - BNF grammar and abstract syntax tree (printed sideways)
+10. for.l, for.y  / forinput.txt   - FOR-statement syntax check
+11. vc.l          / vcinput.txt    - vowels and consonants
+12. while.l, while.y / whileinput.txt - WHILE syntax check
+13. arith.l, arith.y / arithinput.txt - arithmetic-expression syntax check
 
   Arithmetic-expression validator:
-    gedit arith.l arith.y arithinput.txt arith.txt &
+    gedit arith.l arith.y arithinput.txt &
     yacc -d arith.y
     flex arith.l
     gcc y.tab.c lex.yy.c -o arith

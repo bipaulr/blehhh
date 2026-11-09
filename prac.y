@@ -17,7 +17,7 @@ variable : L rest '\n'  { printf("Valid Variable\n"); YYACCEPT; }
          ;
 rest : rest L
      | rest D 
-     | /* empty */
+     |
      ;
 %%
 

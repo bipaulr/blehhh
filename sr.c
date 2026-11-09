@@ -1,16 +1,10 @@
-/* Shift-reduce parser for  E -> E+E | E*E | (E) | id
-   SHIFT pushes the next input symbol on a stack. When the top of the stack matches
-   the right side of a rule (a "handle"), REDUCE replaces it by E.
-   Accept if only E is left when the input ends.
-   Precedence: * is higher than +, so E+E is NOT reduced while the next input is *. */
 #include <stdio.h>
 #include <string.h>
 
-char stk[100];                    /* parse stack; the letter i stands for id */
+char stk[100];
 int top = -1;
-char tok[100];                    /* input tokens: i + * ( ) */
+char tok[100];
 
-/* print stack, remaining input and the action taken */
 void show(int pos, const char *action) {
     int k;
     printf("$");
@@ -24,28 +18,27 @@ void show(int pos, const char *action) {
     printf("$\t\t%s\n", action);
 }
 
-/* try ONE reduction using the lookahead symbol; return 1 if something was reduced */
 int reduce(int pos) {
     char look = tok[pos];
-    if (top >= 0 && stk[top] == 'i') {                              /* E -> id */
+    if (top >= 0 && stk[top] == 'i') {
         stk[top] = 'E';
         show(pos, "REDUCE E->id");
         return 1;
     }
     if (top >= 2 && stk[top] == ')' && stk[top - 1] == 'E' && stk[top - 2] == '(') {
-        top -= 2;                                                   /* E -> (E) */
+        top -= 2;
         stk[top] = 'E';
         show(pos, "REDUCE E->(E)");
         return 1;
     }
     if (top >= 2 && stk[top] == 'E' && stk[top - 1] == '*' && stk[top - 2] == 'E') {
-        top -= 2;                                                   /* E -> E*E */
+        top -= 2;
         stk[top] = 'E';
         show(pos, "REDUCE E->E*E");
         return 1;
     }
     if (top >= 2 && stk[top] == 'E' && stk[top - 1] == '+' && stk[top - 2] == 'E'
-        && look != '*') {                                           /* E -> E+E, unless * is coming */
+        && look != '*') {
         top -= 2;
         stk[top] = 'E';
         show(pos, "REDUCE E->E+E");
@@ -64,7 +57,6 @@ int main(void) {
         fputs("No input\n", stderr);
         return 1;
     }
-    /* convert the text into tokens: "id" becomes the single letter i */
     for (k = 0; s[k]; ) {
         if (s[k] == 'i' && s[k + 1] == 'd') {
             tok[n++] = 'i';
@@ -80,17 +72,17 @@ int main(void) {
 
     printf("\nSTACK\t\tINPUT\t\tACTION\n");
     while (1) {
-        while (reduce(pos)) {     /* reduce as long as a handle is on top */
+        while (reduce(pos)) {
             ;
         }
-        if (tok[pos] == '\0') {   /* input finished */
+        if (tok[pos] == '\0') {
             break;
         }
-        stk[++top] = tok[pos++];  /* SHIFT next token */
+        stk[++top] = tok[pos++];
         show(pos, "SHIFT");
     }
 
-    if (top == 0 && stk[0] == 'E') {      /* only the start symbol is left */
+    if (top == 0 && stk[0] == 'E') {
         printf("\nString accepted\n");
     } else {
         printf("\nString rejected\n");

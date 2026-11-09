@@ -1,12 +1,8 @@
-/* Minimize a DFA: table filling method.
-   Two states are "different" if some input string leads one to a final state and the other
-   to a non-final state. States that are never different can be merged. */
 #include <stdio.h>
 int n, k, num_final;
-int next_state[20][9];     /* next_state[i][a] = state reached from i on symbol a */
+int next_state[20][9];
 int is_final[20];
-int different[20][20];     /* different[i][j] = 1 once we know i and j can be told apart */
-/* smallest state that is equivalent to x (this is the merged state's name) */
+int different[20][20];
 int rep(int x) {
     int j = 0;
     while (different[x][j]) {
@@ -41,15 +37,12 @@ int main(void) {
         }
         is_final[x] = 1;
     }
-    /* step 1: a final and a non-final state are different */
     for (i = 0; i < n; i++) {
         for (j = 0; j < n; j++) {
             different[i][j] = (is_final[i] != is_final[j]);
         }
     }
 
-    /* step 2: if on some symbol the pair goes to a different pair, the pair is different too.
-       Repeat until a full pass changes nothing. */
     while (changed) {
         changed = 0;
         for (i = 0; i < n; i++) {
@@ -68,13 +61,12 @@ int main(void) {
             }
         }
     }
-    /* step 3: print one line per merged state. * marks final. */
     for (i = 0; i < n; i++) {
-        if (rep(i) == i) {                         /* i is the smallest of its group */
+        if (rep(i) == i) {
             printf("%sq%d = {", is_final[i] ? "*" : " ", i);
             for (j = i; j < n; j++) {
                 if (!different[i][j]) {
-                    printf(" q%d", j);             /* members of the group */
+                    printf(" q%d", j);
                 }
             }
             printf(" }");

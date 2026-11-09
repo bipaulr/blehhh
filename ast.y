@@ -1,10 +1,9 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-/* One node of the abstract syntax tree. */
 typedef struct node {
-    const char *label;           /* an operator like "+", or the text of a name or number */
-    struct node *left, *right;   /* operands; both NULL for a leaf */
+    const char *label;
+    struct node *left, *right;
 } Node;
 Node *make_node(const char *label, Node *left, Node *right) {
     Node *p = malloc(sizeof(Node));
@@ -17,8 +16,6 @@ Node *make_node(const char *label, Node *left, Node *right) {
     p->right = right;
     return p;
 }
-/* Print the tree sideways: root at the left, right operand above, left operand below.
-   Each level is indented by 4 spaces. */
 void print_tree(Node *p, int depth) {
     if (p == NULL) {
         return;
@@ -33,7 +30,6 @@ void yyerror(const char *msg) {
     printf("syntax error\n");
 }
 %}
-/* values passed around: text (from lex) or a tree node (built by the rules) */
 %union {
     char *text;
     struct node *node;
@@ -41,25 +37,19 @@ void yyerror(const char *msg) {
 %token <text> ID NUM
 %type <node> expr term factor
 %%
-/* The input is a list of lines, each holding one expression. */
 lines : lines expr '\n'     { print_tree($2, 0);
                               printf("-----\n"); }
       | lines error '\n'    { yyerrok; }
-      | /* empty */
+      |
       ;
-/* BNF rule:  <expr> ::= <expr> + <term> | <expr> - <term> | <term>
-   An operator rule builds a node with its two operands as children. */
 expr   : expr '+' term      { $$ = make_node("+", $1, $3); }
        | expr '-' term      { $$ = make_node("-", $1, $3); }
        | term
        ;
-/* BNF rule:  <term> ::= <term> * <factor> | <term> / <factor> | <factor> */
 term   : term '*' factor    { $$ = make_node("*", $1, $3); }
        | term '/' factor    { $$ = make_node("/", $1, $3); }
        | factor
        ;
-/* BNF rule:  <factor> ::= ( <expr> ) | ID | NUM
-   A name or number becomes a leaf; brackets add no node of their own. */
 factor : '(' expr ')'       { $$ = $2; }
        | ID                 { $$ = make_node($1, NULL, NULL); }
        | NUM                { $$ = make_node($1, NULL, NULL); }

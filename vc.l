@@ -27,12 +27,11 @@ void print_counts(void)
                     has_input = 1;
                 }
 \n              { print_counts(); }
-.               { has_input = 1; } /* Ignore spaces, digits and punctuation. */
+.               { has_input = 1; }
 %%
 
 int yywrap(void)
 {
-    /* Also summarize a final string that does not end with a newline. */
     if (has_input) {
         print_counts();
     }

@@ -1,16 +1,11 @@
-/* FIRST and FOLLOW sets of a grammar.
-   Productions are typed like S=AB (uppercase = non-terminal, # = epsilon).
-   The first production's left side is the start symbol.
-   Rules are applied again and again until no set grows (a fixed point). */
 #include <stdio.h>
 #include <ctype.h>
 
-int n;                            /* number of productions */
-char prod[20][20];                /* prod[p] = "S=AB" */
-char first[128][128];             /* first[X][c] = 1 means c is in FIRST(X) */
-char follow[128][128];            /* follow[X][c] = 1 means c is in FOLLOW(X) */
+int n;
+char prod[20][20];
+char first[128][128];
+char follow[128][128];
 
-/* add c to a set; return 1 only if it was new */
 int add(char *set, int c) {
     if (!set[c]) {
         set[c] = 1;
@@ -26,25 +21,25 @@ void compute_first(void) {
         changed = 0;
         for (p = 0; p < n; p++) {
             a = prod[p][0];
-            rhs = prod[p] + 2;                         /* text after '=' */
+            rhs = prod[p] + 2;
             if (rhs[0] == '#') {
                 changed |= add(first[(int)a], '#');
                 continue;
             }
-            all_nullable = 1;                          /* can the whole right side vanish? */
+            all_nullable = 1;
             for (k = 0; rhs[k]; k++) {
                 x = rhs[k];
-                if (!isupper((unsigned char)x)) {      /* terminal: it starts the string */
+                if (!isupper((unsigned char)x)) {
                     changed |= add(first[(int)a], x);
                     all_nullable = 0;
                     break;
                 }
-                for (c = 0; c < 128; c++) {            /* non-terminal: copy its FIRST minus # */
+                for (c = 0; c < 128; c++) {
                     if (c != '#' && first[(int)x][c]) {
                         changed |= add(first[(int)a], c);
                     }
                 }
-                if (!first[(int)x]['#']) {             /* x cannot vanish: stop */
+                if (!first[(int)x]['#']) {
                     all_nullable = 0;
                     break;
                 }
@@ -59,7 +54,7 @@ void compute_first(void) {
 void compute_follow(char start) {
     int changed = 1, p, k, m, c, rest_nullable;
     char a, b, y, *rhs;
-    follow[(int)start]['$'] = 1;                       /* rule 1: $ follows the start symbol */
+    follow[(int)start]['$'] = 1;
     while (changed) {
         changed = 0;
         for (p = 0; p < n; p++) {
@@ -67,18 +62,18 @@ void compute_follow(char start) {
             rhs = prod[p] + 2;
             for (k = 0; rhs[k]; k++) {
                 b = rhs[k];
-                if (!isupper((unsigned char)b)) {      /* only non-terminals have FOLLOW */
+                if (!isupper((unsigned char)b)) {
                     continue;
                 }
-                rest_nullable = 1;                     /* can everything after b vanish? */
+                rest_nullable = 1;
                 for (m = k + 1; rhs[m]; m++) {
                     y = rhs[m];
-                    if (!isupper((unsigned char)y)) {  /* rule 2: terminal right after b */
+                    if (!isupper((unsigned char)y)) {
                         changed |= add(follow[(int)b], y);
                         rest_nullable = 0;
                         break;
                     }
-                    for (c = 0; c < 128; c++) {        /* rule 2: FIRST of what follows b */
+                    for (c = 0; c < 128; c++) {
                         if (c != '#' && first[(int)y][c]) {
                             changed |= add(follow[(int)b], c);
                         }
@@ -88,7 +83,7 @@ void compute_follow(char start) {
                         break;
                     }
                 }
-                if (rest_nullable) {                   /* rule 3: b can end the production */
+                if (rest_nullable) {
                     for (c = 0; c < 128; c++) {
                         if (follow[(int)a][c]) {
                             changed |= add(follow[(int)b], c);
@@ -136,10 +131,10 @@ int main(void) {
         }
     }
     compute_first();
-    compute_follow(prod[0][0]);                        /* first production = start symbol */
+    compute_follow(prod[0][0]);
 
     printf("\n");
-    for (p = 0; p < n; p++) {                          /* print each non-terminal once */
+    for (p = 0; p < n; p++) {
         if (!seen[(int)prod[p][0]]) {
             seen[(int)prod[p][0]] = 1;
             print_set("FIRST ", prod[p][0], first);

@@ -17,19 +17,16 @@ input : expr '\n'
             { printf("Valid arithmetic expression\n"); YYACCEPT; }
       ;
 
-/* Addition and subtraction combine complete terms. */
 expr : expr '+' term
      | expr '-' term
      | term
      ;
 
-/* Multiplication and division bind more tightly. */
 term : term '*' factor
      | term '/' factor
      | factor
      ;
 
-/* Unary signs and parentheses are allowed; empty parentheses are not. */
 factor : '+' factor
        | '-' factor
        | '(' expr ')'

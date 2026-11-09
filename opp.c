@@ -1,36 +1,27 @@
-/* Operator precedence parser for  E -> E+E | E*E | id   (the letter i stands for id).
-   Compare the terminal nearest the top of the stack with the next input terminal:
-     '<'  stack side is weaker   -> SHIFT the input symbol
-     '>'  stack side is stronger -> REDUCE the handle on top of the stack
-   Accept when the stack is $E and the input is $. */
 #include <stdio.h>
 #include <string.h>
 
-char terms[] = "i+*$";            /* order of the rows and columns of the table */
+char terms[] = "i+*$";
 
-/* rel[row][col]: row = terminal on the stack, col = next input terminal */
 char rel[4][4] = {
-    /*         i    +    *    $  */
-    /* i */ { 'e', '>', '>', '>' },   /* e = error: i cannot be followed by i   */
-    /* + */ { '<', '>', '<', '>' },   /* * binds tighter, + is left associative */
-    /* * */ { '<', '>', '>', '>' },
-    /* $ */ { '<', '<', '<', '=' }    /* $ against $ means: finished            */
+     { 'e', '>', '>', '>' },
+     { '<', '>', '<', '>' },
+     { '<', '>', '>', '>' },
+     { '<', '<', '<', '=' }
 };
 
-char stk[100];                    /* parse stack: terminals and E */
+char stk[100];
 int top = 0;
 
-/* row/column number of a terminal, -1 if the character is not in the table */
 int idx(char c) {
     char *p;
     if (c == '\0') {
-        return -1;                /* strchr would match the string terminator */
+        return -1;
     }
     p = strchr(terms, c);
     return p ? (int)(p - terms) : -1;
 }
 
-/* nearest terminal below any E on the stack */
 char top_terminal(void) {
     int k;
     for (k = top; k >= 0; k--) {
@@ -62,27 +53,27 @@ int main(void) {
     while (1) {
         a = top_terminal();
         b = ip[i];
-        if (idx(b) < 0) {         /* unknown character, or the $ was left out */
+        if (idx(b) < 0) {
             show(ip + i, "Invalid symbol: rejected");
             break;
         }
-        if (a == '$' && b == '$') {                       /* both ends reached */
+        if (a == '$' && b == '$') {
             show(ip + i, strcmp(stk, "$E") == 0 ? "String is accepted"
                                                 : "String is not accepted");
             break;
         }
         r = rel[idx(a)][idx(b)];
-        if (r == '<') {                                   /* SHIFT */
+        if (r == '<') {
             stk[++top] = b;
             sprintf(msg, "Shift %c", b);
             i++;
             show(ip + i, msg);
-        } else if (r == '>') {                            /* REDUCE: check the handle */
-            if (stk[top] == 'i') {                        /* E -> i */
+        } else if (r == '>') {
+            if (stk[top] == 'i') {
                 stk[top] = 'E';
                 show(ip + i, "Reduce E -> i");
             } else if (top >= 2 && stk[top] == 'E' && stk[top - 2] == 'E' &&
-                       (stk[top - 1] == '+' || stk[top - 1] == '*')) { /* E -> E+E or E*E */
+                       (stk[top - 1] == '+' || stk[top - 1] == '*')) {
                 sprintf(msg, "Reduce E -> E%cE", stk[top - 1]);
                 top -= 2;
                 stk[top] = 'E';

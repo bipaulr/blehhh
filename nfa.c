@@ -1,16 +1,10 @@
-/* Convert an NFA (no e moves) into a DFA: subset construction.
-   Each DFA state is a SET of NFA states. A set is stored in one integer
-   ("bitmask"): bit i is 1 when NFA state i is in the set.
-       set | (1 << i)       adds state i to the set
-       set & (1 << i)       is non-zero when state i is in the set */
 #include <stdio.h>
 int n, k, m, num_final;
-int nfa_move[16][9];           /* nfa_move[i][a] = set of states reached from i on symbol a */
-int final_set;                 /* set of NFA final states                                   */
-int dfa_state[65536];          /* dfa_state[d] = the set of NFA states that DFA state d is  */
-int dfa_next[65536][9];        /* dfa_next[d][a] = set reached from d on symbol a           */
-int count;                     /* number of DFA states found so far                         */
-/* print a set like {0,2}; empty set prints {} */
+int nfa_move[16][9];
+int final_set;
+int dfa_state[65536];
+int dfa_next[65536][9];
+int count;
 void print_set(int set) {
     int i, first = 1;
     printf("{");
@@ -25,7 +19,6 @@ void print_set(int set) {
     }
     printf("}");
 }
-/* return the DFA state number of this set, or -1 if it is new */
 int find(int set) {
     int d;
     for (d = 0; d < count; d++) {
@@ -64,27 +57,22 @@ int main(void) {
         }
         final_set |= 1 << x;
     }
-    /* the DFA start state is the set {0} */
     dfa_state[0] = 1 << 0;
     count = 1;
-    /* process DFA states one by one; new ones are added to the end of the list */
     for (d = 0; d < count; d++) {
         for (a = 0; a < k; a++) {
-            /* target = union of the moves of every NFA state inside this DFA state */
             target = 0;
             for (i = 0; i < n; i++) {
                 if (dfa_state[d] & (1 << i)) {
                     target |= nfa_move[i][a];
                 }
             }
-            /* Include the empty set as a dead state, with self-loops. */
             if (find(target) == -1) {
                 dfa_state[count++] = target;
             }
             dfa_next[d][a] = target;
         }
     }
-    /* print the DFA table; * marks a final state */
     for (d = 0; d < count; d++) {
         printf("%s", (dfa_state[d] & final_set) ? "*" : " ");
         print_set(dfa_state[d]);

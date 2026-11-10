@@ -69,10 +69,7 @@ void F(void) {
 
 int main(void) {
     printf("Enter input expression: ");
-    if (scanf("%99s", ip) != 1) {
-        fputs("No input\n", stderr);
-        return 1;
-    }
+    scanf("%99s", ip);
     printf("\nSequence of production rules:\n");
     E();
     if (ip[pos] == '\0') {

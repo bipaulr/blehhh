@@ -32,29 +32,14 @@ int find(int set) {
 int main(void) {
     int i, a, d, from, to, x, target;
     char symbol;
-    if (scanf("%d %d %d", &n, &k, &m) != 3 ||
-        n < 1 || n > 16 || k < 1 || k > 9 || m < 0) {
-        fputs("Invalid counts (1-16 states, 1-9 symbols)\n", stderr);
-        return 1;
-    }
+    scanf("%d %d %d", &n, &k, &m);
     for (i = 0; i < m; i++) {
-        if (scanf("%d %c %d", &from, &symbol, &to) != 3 ||
-            from < 0 || from >= n || to < 0 || to >= n ||
-            symbol < 'a' || symbol >= 'a' + k) {
-            fputs("Invalid transition\n", stderr);
-            return 1;
-        }
+        scanf("%d %c %d", &from, &symbol, &to);
         nfa_move[from][symbol - 'a'] |= 1 << to;
     }
-    if (scanf("%d", &num_final) != 1 || num_final < 0 || num_final > n) {
-        fputs("Invalid final-state count\n", stderr);
-        return 1;
-    }
+    scanf("%d", &num_final);
     for (i = 0; i < num_final; i++) {
-        if (scanf("%d", &x) != 1 || x < 0 || x >= n) {
-            fputs("Invalid final state\n", stderr);
-            return 1;
-        }
+        scanf("%d", &x);
         final_set |= 1 << x;
     }
     dfa_state[0] = 1 << 0;

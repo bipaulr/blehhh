@@ -4,17 +4,9 @@ int reach[20][20];
 int main(void) {
     int from, to, i, j, k;
     char symbol;
-    if (scanf("%d %d", &num_states, &num_transitions) != 2 ||
-        num_states < 1 || num_states > 20 || num_transitions < 0) {
-        fputs("Invalid state/transition counts\n", stderr);
-        return 1;
-    }
+    scanf("%d %d", &num_states, &num_transitions);
     for (i = 0; i < num_transitions; i++) {
-        if (scanf("%d %c %d", &from, &symbol, &to) != 3 ||
-            from < 0 || from >= num_states || to < 0 || to >= num_states) {
-            fputs("Invalid transition\n", stderr);
-            return 1;
-        }
+        scanf("%d %c %d", &from, &symbol, &to);
         if (symbol == 'e') {
             reach[from][to] = 1;
         }

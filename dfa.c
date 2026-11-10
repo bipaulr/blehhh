@@ -12,29 +12,15 @@ int rep(int x) {
 }
 int main(void) {
     int i, j, a, x, y, changed = 1;
-    if (scanf("%d %d", &n, &k) != 2 ||
-        n < 1 || n > 20 || k < 1 || k > 9) {
-        fputs("Invalid counts (1-20 states, 1-9 symbols)\n", stderr);
-        return 1;
-    }
+    scanf("%d %d", &n, &k);
     for (i = 0; i < n; i++) {
         for (a = 0; a < k; a++) {
-            if (scanf("%d", &next_state[i][a]) != 1 ||
-                next_state[i][a] < 0 || next_state[i][a] >= n) {
-                fputs("Invalid DFA transition\n", stderr);
-                return 1;
-            }
+            scanf("%d", &next_state[i][a]);
         }
     }
-    if (scanf("%d", &num_final) != 1 || num_final < 0 || num_final > n) {
-        fputs("Invalid final-state count\n", stderr);
-        return 1;
-    }
+    scanf("%d", &num_final);
     for (i = 0; i < num_final; i++) {
-        if (scanf("%d", &x) != 1 || x < 0 || x >= n) {
-            fputs("Invalid final state\n", stderr);
-            return 1;
-        }
+        scanf("%d", &x);
         is_final[x] = 1;
     }
     for (i = 0; i < n; i++) {

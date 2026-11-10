@@ -20,18 +20,8 @@ int main(void) {
             switch (op) {
                 case '+': printf("ADD AX, %s\n", a2); break;
                 case '-': printf("SUB AX, %s\n", a2); break;
-                case '*':
-                    if (isdigit((unsigned char)a2[0])) {
-                        printf("MOV BX, %s\n", a2);
-                        strcpy(a2, "BX");
-                    }
-                    printf("MUL %s\n", a2);
-                    break;
+                case '*':printf("MUL %s\n", a2);break;
                 case '/':
-                    if (isdigit((unsigned char)a2[0])) {
-                        printf("MOV BX, %s\n", a2);
-                        strcpy(a2, "BX");
-                    }
                     printf("MOV DX, 0\n");
                     printf("DIV %s\n", a2);
                     break;

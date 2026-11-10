@@ -38,3 +38,27 @@ CYCLE III - PARSERS AND CODE GENERATION (all plain C, METHOD 1)
 18. icg.c    / icginput.txt    / icg.txt    / icgps.txt    - three-address code generation
 19. asm86.c  / asm86input.txt  / asm86.txt  / asm86ps.txt  - three-address code to 8086 assembly
 
+CYCLE IV - LAB QUESTIONS (LEX AND YACC, code and sample input only)
+20. kw.l                 / kwinput.txt      - recognize all C keywords (Lex, METHOD 2)
+21. opcnt.l              / opcntinput.txt   - count the operators + - * / % = == in an expression (Lex, METHOD 2)
+22. parexp.l, parexp.y   / parexpinput.txt  - arithmetic expressions with parentheses (Yacc, METHOD 3)
+23. assign.l, assign.y   / assigninput.txt  - assignment of the form id = num + id; (Lex + Yacc, METHOD 3)
+24. cmnt.l               / cmntinput.txt    - count and print // and /* */ comments (Lex, METHOD 2)
+25. ifst.l, ifst.y       / ifstinput.txt    - simple IF statement check (Lex + Yacc, METHOD 3)
+26. numc.l               / numcinput.txt    - integer and float constants (Lex, METHOD 2)
+27. addsub.l, addsub.y   / addsubinput.txt  - evaluate expressions with + and - only (Lex + Yacc, METHOD 3)
+
+  Lex only (kw, opcnt, cmnt, numc):
+    flex kw.l
+    gcc lex.yy.c -o kw
+    ./kw
+    Type or paste the text, then press Ctrl+D to finish.
+  Lex + Yacc (parexp, assign, ifst, addsub):
+    yacc -d parexp.y
+    flex parexp.l
+    gcc y.tab.c lex.yy.c -o parexp
+    ./parexp
+    Type one line per case, then press Ctrl+D to finish.
+  assign accepts both id = num + id; and id = id + num; (so x = a + 5; is valid).
+  opcnt does not count two-character operators such as ++ += <= != as + or =.
+  The input files are references, not redirected input.

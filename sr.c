@@ -53,10 +53,7 @@ int main(void) {
 
     printf("GRAMMAR is E->E+E | E->E*E | E->(E) | E->id\n");
     printf("enter input string: ");
-    if (scanf("%99s", s) != 1) {
-        fputs("No input\n", stderr);
-        return 1;
-    }
+    scanf("%99s", s);
     for (k = 0; s[k]; ) {
         if (s[k] == 'i' && s[k + 1] == 'd') {
             tok[n++] = 'i';
@@ -72,9 +69,7 @@ int main(void) {
 
     printf("\nSTACK\t\tINPUT\t\tACTION\n");
     while (1) {
-        while (reduce(pos)) {
-            ;
-        }
+        while (reduce(pos));
         if (tok[pos] == '\0') {
             break;
         }

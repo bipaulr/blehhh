@@ -16,7 +16,7 @@ char table[8][8] = {
 };
 
 int findex(char c)
-{
+{   
     switch(c)
     {
         case '+': return 0;

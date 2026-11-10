@@ -1,0 +1,13 @@
+# One IF statement per line: if ( condition ) statement, where the statement is x = expr; or another if.
+# Valid IF statement
+if(a<b) x=5;
+# Valid IF statement: nested if and an arithmetic condition
+if (a+1 >= b*2) if (c == d) y = a - 1;
+# Valid IF statement: a plain expression as the condition
+if (a) x = 1;
+# Invalid IF statement: missing statement
+if(a<b)
+# Invalid IF statement: missing brackets
+if a<b x=5;
+# Invalid IF statement: missing semicolon
+if(a<b) x=5

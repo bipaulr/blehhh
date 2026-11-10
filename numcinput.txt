@@ -1,0 +1,6 @@
+# Type text or code and finish with Ctrl+D on Ubuntu. Each number is printed with its type.
+# Names such as x1 and text inside strings are ignored.
+# Expected: 123 : Integer, 12.34 : Float, 7 : Integer, 0.5 : Float, then Integers: 2, Floats: 2
+a = 123;
+b = 12.34 + x1;
+c = 7 * 0.5; printf("99");

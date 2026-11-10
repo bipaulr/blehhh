@@ -1,0 +1,11 @@
+# One arithmetic expression per line. Numbers, + - * /, and parentheses only; finish with Ctrl+D.
+# Valid Expression
+(2+3)*4
+# Valid Expression
+2*(3+(4-1))/5
+# Invalid Expression: missing closing bracket
+(2+3*4
+# Invalid Expression: two operators in a row
+2+*3
+# Invalid Expression: empty brackets
+()

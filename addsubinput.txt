@@ -1,0 +1,11 @@
+# One expression per line using whole numbers with + and - only; finish with Ctrl+D.
+# Result = 6
+5+3-2
+# Result = 10
+10
+# Result = -5
+1 - 6
+# Invalid Expression: a * is not allowed
+2*3
+# Invalid Expression: operator at the end
+4+

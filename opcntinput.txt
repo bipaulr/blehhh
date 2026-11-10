@@ -1,0 +1,9 @@
+# Type one expression per line and press Enter; finish with Ctrl+D on Ubuntu.
+# Counted operators: + - * / % = ==  (two-character operators such as ++ += <= != are not counted).
+# Only operators that appear are listed, in the order + - * / % = ==.
+# Output: + : 1, * : 1, = : 1
+a = b + c * d;
+# Output: - : 2, / : 1, % : 1, == : 1
+if (a - b - c / d % e == 0)
+# Output: No operators
+hello world

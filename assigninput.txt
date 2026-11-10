@@ -1,0 +1,11 @@
+# One assignment per line. Form: id = num + id;  or  id = id + num;  (both orders are accepted).
+# Valid Assignment
+x = a + 5;
+# Valid Assignment
+x = 5 + a;
+# Invalid Assignment: starts with =
+=x 5 + a;
+# Invalid Assignment: missing semicolon
+x = a + 5
+# Invalid Assignment: two numbers
+x = 3 + 5;

@@ -1,0 +1,13 @@
+# Type C code and finish with Ctrl+D on Ubuntu. Each C keyword is printed as it is found.
+# Names such as integer or format are not keywords, and text inside strings and comments is ignored.
+# This example has 7 keywords: int, for, int, if, return, while, return.
+int main() {
+    for (int i = 0; i < 3; i++) {
+        if (i == 1) return 1;
+    }
+    while (0) { }
+    return 0;
+}
+# Not keywords: integer, format, "while" in a string, and for in a comment.
+integer format = 1; // for
+printf("while");

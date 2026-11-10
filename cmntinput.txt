@@ -1,0 +1,8 @@
+# Type C code and finish with Ctrl+D on Ubuntu. Each comment is printed, then the totals.
+# Comment markers inside strings are not comments. Expected here: 2 single-line and 2 multi-line.
+int x = 5; // first single-line comment
+printf("// not a comment");
+/* a multi-line
+   comment over two lines */
+int y = 6; // second single-line comment
+/* one-line block comment */

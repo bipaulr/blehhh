@@ -43,7 +43,6 @@ void display(char action[])
 
 int reduce(char action[])
 {
-    /* E -> i */
     if(top >= 0 && stack[top] == 'i')
     {
         stack[top] = 'E';
@@ -51,7 +50,6 @@ int reduce(char action[])
         return 1;
     }
 
-    /* E -> (E) */
     if(top >= 2 &&
        stack[top] == ')' &&
        stack[top-1] == 'E' &&
@@ -64,7 +62,6 @@ int reduce(char action[])
         return 1;
     }
 
-    /* E -> E+E | E-E | E*E | E/E */
     if(top >= 2 &&
        stack[top] == 'E' &&
        stack[top-2] == 'E')
@@ -107,7 +104,6 @@ int main()
     {
         i = top;
 
-        /* Ignore E while finding the top terminal */
         while(i >= 0 && stack[i] == 'E')
             i--;
 
@@ -124,14 +120,12 @@ int main()
             break;
         }
 
-        /* Invalid symbol */
         if(findex(a) == -1 || findex(b) == -1)
         {
             display("REJECTED");
             break;
         }
 
-        /* SHIFT */
         if(table[findex(a)][findex(b)] == '<' ||
            table[findex(a)][findex(b)] == '=')
         {
@@ -141,7 +135,6 @@ int main()
             display("SHIFT");
         }
 
-        /* REDUCE */
         else if(table[findex(a)][findex(b)] == '>')
         {
             if(!reduce(action))
@@ -153,7 +146,6 @@ int main()
             display(action);
         }
 
-        /* Error */
         else
         {
             display("REJECTED");
